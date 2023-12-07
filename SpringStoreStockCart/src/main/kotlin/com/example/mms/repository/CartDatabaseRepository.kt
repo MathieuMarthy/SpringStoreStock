@@ -8,17 +8,30 @@ class CartDatabaseRepository(private val jpa: CartJpaRepository) : CartRepositor
         TODO("Not yet implemented")
     }
 
-    override fun create(cart: Cart): Result<Cart> {
+    override fun create(id: Int): Result<Cart> {
         TODO("Not yet implemented")
     }
 
-    override fun update(cart: Cart): Result<Cart> {
+    override fun updateItem(id: Int, itemId: Int, quantity: Int): Result<Cart> {
         TODO("Not yet implemented")
     }
 
-    override fun delete(cart: Cart): Cart? {
+    override fun deleteItem(id: Int, itemId: Int): Result<Cart> {
         TODO("Not yet implemented")
     }
+
+    override fun update(newCart: Cart): Result<Cart> {
+        TODO("Not yet implemented")
+    }
+
+    override fun delete(id: Int): Result<Cart> {
+        TODO("Not yet implemented")
+    }
+
+    override fun valid(id: Int): Boolean {
+        TODO("Not yet implemented")
+    }
+
 }
 
 interface CartJpaRepository : JpaRepository<Cart, Int>
