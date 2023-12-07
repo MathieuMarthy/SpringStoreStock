@@ -3,12 +3,8 @@ package com.example.mms.repository
 import com.example.mms.Models.Cart
 
 interface CartRepository {
-
-    fun get(): Cart
-
-    fun create(cart: Cart)
-
-    fun update(cart: Cart)
-
-    fun delete(cart: Cart)
+    fun get(id : Int): Cart?
+    fun create(cart: Cart) : Result<Cart>
+    fun update(cart: Cart) : Result<Cart>
+    fun delete(cart: Cart) : Cart?
 }
