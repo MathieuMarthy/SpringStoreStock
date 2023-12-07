@@ -1,12 +1,12 @@
 package com.example.mms.controllers
 
 import com.example.mms.dto.CartDTO
+import com.example.mms.dto.ItemRequestDTO
 import com.example.mms.dto.asCartDTO
 import com.example.mms.errors.CartAlreadyExistsException
 import com.example.mms.errors.CartNotFoundException
 import com.example.mms.repository.CartRepository
 import jakarta.validation.Valid
-import jakarta.validation.constraints.Min
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
@@ -50,14 +50,27 @@ class CartController(val cartRepository: CartRepository) {
         return ResponseEntity.ok(resCart.getOrNull()!!.asCartDTO())
     }
 
+    @PostMapping("api/cart/{userId}/item")
+    fun addItem(
+        @PathVariable userId: Int,
+        @RequestBody @Valid updateItemRequestDTO: ItemRequestDTO
+    ): ResponseEntity<CartDTO> {
+        val resCart = this.cartRepository.addItem(userId, updateItemRequestDTO.itemId, updateItemRequestDTO.quantity)
+
+        if (resCart.isFailure) {
+            throw resCart.exceptionOrNull()!!
+        }
+
+        return ResponseEntity.ok(resCart.getOrNull()!!.asCartDTO())
+    }
+
     @PutMapping("api/cart/{userId}/item")
     fun updateItem(
         @PathVariable userId: Int,
-        @RequestBody itemId: Int,
-        @RequestBody @Valid @Min(0) quantity: Int
+        @RequestBody updateItemRequestDTO: ItemRequestDTO
     ): ResponseEntity<CartDTO> {
         // TODO: vérifier le stock dans l'api des items
-        val resCart = this.cartRepository.updateItem(userId, itemId, quantity)
+        val resCart = this.cartRepository.updateItem(userId, updateItemRequestDTO.itemId, updateItemRequestDTO.quantity)
 
         if (resCart.isFailure) {
             throw CartNotFoundException(userId)
