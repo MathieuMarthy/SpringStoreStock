@@ -36,7 +36,7 @@ class ItemController(val itemRepository: ItemRepository)  {
     @GetMapping("api/items")
     fun getAllItems(): ResponseEntity<List<ItemEntity>> =
         itemRepository.getAll()
-            .map { it.asEntity() }
+            .map { it!!.asEntity() }
             .let { ResponseEntity.ok(it) }
 
     @PutMapping("api/items/{id}")
