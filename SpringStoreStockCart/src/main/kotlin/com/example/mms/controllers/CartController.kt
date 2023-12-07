@@ -6,10 +6,12 @@ import com.example.mms.errors.CartAlreadyExistsException
 import com.example.mms.errors.CartNotFoundException
 import com.example.mms.repository.CartRepository
 import jakarta.validation.constraints.Min
+import jakarta.websocket.server.PathParam
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -21,6 +23,8 @@ class CartController(val cartRepository: CartRepository) {
 
     @PostMapping("api/cart")
     fun create(@RequestBody userId: Int): ResponseEntity<CartDTO> {
+        println("aaaaaaaaaaaaaaaa")
+
         val resCart = this.cartRepository.create(userId)
 
         if (resCart.isFailure) {
@@ -30,8 +34,9 @@ class CartController(val cartRepository: CartRepository) {
         return ResponseEntity.ok(resCart.getOrNull()!!.asCartDTO())
     }
 
-    @GetMapping("api/cart")
-    fun get(@RequestBody userId: Int): ResponseEntity<CartDTO> {
+    @GetMapping("/api/cart/{userId}")
+    fun get(@PathVariable userId: Int): ResponseEntity<CartDTO> {
+        println("aaaaaaaaaaaaaaaa")
         val cart = this.cartRepository.get(userId) ?: throw CartNotFoundException(userId)
 
         return ResponseEntity.ok(cart.asCartDTO())

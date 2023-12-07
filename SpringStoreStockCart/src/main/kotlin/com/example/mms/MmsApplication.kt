@@ -7,5 +7,6 @@ import org.springframework.boot.runApplication
 class MmsApplication
 
 fun main(args: Array<String>) {
+    println("aaaaaaaaaaaaaaaa")
     runApplication<MmsApplication>(*args)
 }
