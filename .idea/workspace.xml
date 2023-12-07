@@ -4,26 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0eab1fa2-0be5-4bd3-8443-b5ff5f813f51" name="Changes" comment="CartInMemory">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/HELP.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradlew" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradlew.bat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/settings.gradle.kts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/example/mms/DTO/UserDTO.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/example/mms/MmsApplication.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/example/mms/Models/Cart.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/example/mms/Models/Item.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/example/mms/Models/User.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/example/mms/repository/CartDatabaseRepository.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/example/mms/repository/CartInMemoryRepository.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/example/mms/repository/CartRepository.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/kotlin/com/example/mms/MmsApplicationTests.kt" beforeDir="false" />
-    </list>
+    <list default="true" id="0eab1fa2-0be5-4bd3-8443-b5ff5f813f51" name="Changes" comment="Test" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -59,11 +40,12 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "main",
-    "last_opened_file_path": "/home/E216351P/reseau/Perso/Documents/3eme Année/S5/QDev/SpringStoreStock",
+    "last_opened_file_path": "/home/E216351P/reseau/Perso/Documents/3eme Année/S5/QDev/SpringStoreStock/SpringStoreStockUser",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
     "spring.configuration.checksum": "9de0862494cc3aa211be7c76dc6b547b",
     "vue.rearranger.settings.migration": "true"
   }
@@ -86,7 +68,7 @@
       <option name="presentableId" value="Default" />
       <updated>1701274353717</updated>
       <workItem from="1701274355002" duration="2122000" />
-      <workItem from="1701933557739" duration="2794000" />
+      <workItem from="1701933557739" duration="3007000" />
     </task>
     <task id="LOCAL-00001" summary="CartInMemory">
       <option name="closed" value="true" />
@@ -96,7 +78,15 @@
       <option name="project" value="LOCAL" />
       <updated>1701935284793</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Test">
+      <option name="closed" value="true" />
+      <created>1701936372823</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1701936372823</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -105,6 +95,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Models" />
     <MESSAGE value="CartInMemory" />
-    <option name="LAST_COMMIT_MESSAGE" value="CartInMemory" />
+    <MESSAGE value="Test" />
+    <option name="LAST_COMMIT_MESSAGE" value="Test" />
   </component>
 </project>
