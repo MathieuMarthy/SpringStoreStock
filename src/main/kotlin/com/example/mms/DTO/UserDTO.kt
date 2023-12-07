@@ -20,5 +20,4 @@ data class UserDTO(
     @Id
     @field:Email(message = "Email should be valid")
     val email : String
-) {
-}
+)
