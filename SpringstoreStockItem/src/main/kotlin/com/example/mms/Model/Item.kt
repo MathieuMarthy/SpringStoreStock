@@ -7,5 +7,5 @@ data class Item(
         val name: String,
         val price: Double,
         val stock: Int,
-        val dateLastUpdate: Date
+        var dateLastUpdate: Date?
 )

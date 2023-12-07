@@ -1,20 +1,25 @@
 package com.example.mms.Repository
 
 import com.example.mms.Model.Item
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.Table
+import jakarta.persistence.*
+import org.hibernate.annotations.UpdateTimestamp
 import java.util.*
 
 @Entity
 @Table(name = "items")
 data class ItemEntity (
-    @Id val id : Int,
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id : Int? = null,
     val name : String,
     val price : Double,
     val stock : Int,
-    val dateLastUpdate : Date
+
+    @UpdateTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    val dateLastUpdate : Date?
     ){
-    fun asItem() = Item(id, name, price, stock, dateLastUpdate)
+    fun asItem(): Item? {
+        return id?.let { Item(it, name, price, stock, dateLastUpdate) }
+    }
 }
 fun Item.asEntity() = ItemEntity(id, name, price, stock, dateLastUpdate)
