@@ -12,6 +12,10 @@ class CartDatabaseRepository(private val jpa: CartJpaRepository) : CartRepositor
         TODO("Not yet implemented")
     }
 
+    override fun addItem(id: Int, itemId: Int, quantity: Int): Result<Cart> {
+        TODO("Not yet implemented")
+    }
+
     override fun updateItem(id: Int, itemId: Int, quantity: Int): Result<Cart> {
         TODO("Not yet implemented")
     }
