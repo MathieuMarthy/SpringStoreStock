@@ -1,7 +1,6 @@
 package com.example.mms.repository
 
-import com.example.mms.errors.CartAlreadyExistsException
-import com.example.mms.errors.CartNotFoundException
+import com.example.mms.errors.*
 import com.example.mms.models.Cart
 import com.example.mms.models.ItemInCart
 import org.springframework.stereotype.Service
@@ -33,7 +32,7 @@ class CartInMemoryRepository : CartRepository {
         val cart = this.get(id)!!
         val item = cart.items.find { i -> i.itemId == itemId }
         if (item != null) {
-            return Result.failure(CartAlreadyExistsException("Item already exists"))
+            return Result.failure(ItemAlreadyExistsException(item.itemId))
         }
 
         cart.items.add(
@@ -49,7 +48,7 @@ class CartInMemoryRepository : CartRepository {
         val cart = this.get(id) ?: return Result.failure(CartNotFoundException(id))
 
         // Check if item is already in the items list
-        val item = cart.items.find { i -> i.itemId == itemId } ?: return Result.failure(CartNotFoundException(id))
+        val item = cart.items.find { i -> i.itemId == itemId } ?: return Result.failure(ItemNotFoundException(id))
 
         // set the quantity
         item.quantity = quantity
@@ -69,7 +68,7 @@ class CartInMemoryRepository : CartRepository {
     }
 
     override fun deleteItem(id: Int, itemId: Int): Result<Cart> {
-        val cart = this.get(id) ?: return Result.failure(CartNotFoundException(id))
+        val cart = this.get(id) ?: return Result.failure(ItemNotFoundException(id))
 
         cart.items.removeIf { e -> e.itemId == itemId }
         return Result.success(cart)

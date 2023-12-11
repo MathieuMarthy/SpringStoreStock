@@ -1,5 +1,6 @@
 package com.example.mms.Controller
 
+import ItemNotFoundException
 import com.example.mms.Controller.DTO.ItemDTO
 import com.example.mms.Controller.DTO.asDTO
 import com.example.mms.Repository.ItemEntity
@@ -29,9 +30,8 @@ class ItemController(val itemRepository: ItemRepository)  {
 
     @GetMapping("api/items/{id}")
     fun getOneItem(@Valid id : Int): ResponseEntity<ItemDTO> {
-        val item = itemRepository.get(id)
-        return if (item != null) ResponseEntity.ok(item.asDTO())
-        else ResponseEntity.notFound().build()
+        val item = itemRepository.get(id) ?: throw ItemNotFoundException(id)
+        return ResponseEntity.ok(item.asDTO())
     }
     @GetMapping("api/items")
     fun getAllItems(): ResponseEntity<List<ItemEntity>> =
@@ -48,9 +48,7 @@ class ItemController(val itemRepository: ItemRepository)  {
             { e -> ResponseEntity.status(HttpStatus.CONFLICT).build() }
         )
     }
-
-
     @DeleteMapping("api/items/{id}")
     fun deleteItem(@Valid id : Int): ResponseEntity<Any> =
-        itemRepository.delete(id)?.let { ResponseEntity.noContent().build() } ?: ResponseEntity.notFound().build()
+        itemRepository.delete(id)?.let { ResponseEntity.noContent().build() } ?: throw ItemNotFoundException(id)
 }
