@@ -6,6 +6,12 @@ import com.example.mms.Controller.DTO.asDTO
 import com.example.mms.Repository.ItemEntity
 import com.example.mms.Repository.ItemRepository
 import com.example.mms.Repository.asEntity
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.ArraySchema
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -21,33 +27,70 @@ import org.springframework.web.bind.annotation.RestController
 @Validated
 class ItemController(val itemRepository: ItemRepository)  {
 
+    @Operation(summary = "Create a new item")
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "201", description = "Item created",
+            content = [Content(mediaType = "application/json", schema = Schema(implementation = ItemEntity::class))]),
+        ApiResponse(responseCode = "409", description = "Item already exists",
+            content = [Content(mediaType = "application/json", schema = Schema(implementation = String::class))])
+    ])
     @PostMapping("api/items")
-    fun create(@RequestBody @Valid item : ItemDTO): ResponseEntity<ItemDTO> =
+    fun create(@RequestBody @Valid item : ItemDTO): ResponseEntity<ItemEntity> =
         itemRepository.create(item.asItem()).fold(
-            { s -> ResponseEntity.status(HttpStatus.CREATED).body(s.asDTO())},
+            { s -> ResponseEntity.status(HttpStatus.CREATED).body(s.asEntity())},
             { e -> ResponseEntity.status(HttpStatus.CONFLICT).build() }
         )
 
+    @Operation(summary = "Get an item by its id")
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "200", description = "Found the item",
+            content = [Content(mediaType = "application/json", schema = Schema(implementation = ItemEntity::class))]),
+        ApiResponse(responseCode = "404", description = "Item not found",
+            content = [Content(mediaType = "application/json", schema = Schema(implementation = String::class))])
+    ])
     @GetMapping("api/items/{id}")
-    fun getOneItem(@Valid id : Int): ResponseEntity<ItemDTO> {
+    fun getOneItem(@Valid id : Int): ResponseEntity<ItemEntity> {
         val item = itemRepository.get(id) ?: throw ItemNotFoundException(id)
-        return ResponseEntity.ok(item.asDTO())
+        return ResponseEntity.ok(item.asEntity())
     }
+    @Operation(summary = "Get all items")
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "200", description = "Found the items",
+            content = [Content(mediaType = "application/json", array = ArraySchema(schema = Schema(implementation = ItemEntity::class)))]),
+        ApiResponse(responseCode = "404", description = "Items not found",
+            content = [Content(mediaType = "application/json", schema = Schema(implementation = String::class))])
+    ])
     @GetMapping("api/items")
     fun getAllItems(): ResponseEntity<List<ItemEntity>> =
         itemRepository.getAll()
             .map { it!!.asEntity() }
             .let { ResponseEntity.ok(it) }
 
+    @Operation(summary = "Update an item by its id")
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "200", description = "Item updated",
+            content = [Content(mediaType = "application/json", schema = Schema(implementation = ItemEntity::class))]),
+        ApiResponse(responseCode = "404", description = "Item not found",
+            content = [Content(mediaType = "application/json", schema = Schema(implementation = String::class))]),
+        ApiResponse(responseCode = "409", description = "Item already exists",
+            content = [Content(mediaType = "application/json", schema = Schema(implementation = String::class))])
+    ])
     @PutMapping("api/items/{id}")
     fun updateItem(@Valid id: Int, @RequestBody item : ItemDTO): ResponseEntity<Any> {
         val itemInDB = itemRepository.get(id)
         return if ( itemInDB == null) ResponseEntity.notFound().build()
         else itemRepository.update(item.asItem()).fold(
-            { s -> ResponseEntity.ok(s.asDTO())},
+            { s -> ResponseEntity.ok(s.asEntity())},
             { e -> ResponseEntity.status(HttpStatus.CONFLICT).build() }
         )
     }
+    @Operation(summary = "Delete an item by its id")
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "204", description = "Item deleted",
+            content = [Content(mediaType = "application/json", schema = Schema(implementation = ItemEntity::class))]),
+        ApiResponse(responseCode = "404", description = "Item not found",
+            content = [Content(mediaType = "application/json", schema = Schema(implementation = String::class))])
+    ])
     @DeleteMapping("api/items/{id}")
     fun deleteItem(@Valid id : Int): ResponseEntity<Any> =
         itemRepository.delete(id)?.let { ResponseEntity.noContent().build() } ?: throw ItemNotFoundException(id)
