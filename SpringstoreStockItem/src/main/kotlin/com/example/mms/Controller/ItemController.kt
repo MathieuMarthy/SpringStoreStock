@@ -2,6 +2,7 @@ package com.example.mms.Controller
 
 import ItemNotFoundException
 import com.example.mms.Controller.DTO.ItemDTO
+import com.example.mms.Controller.DTO.ItemInCartDTO
 import com.example.mms.Repository.ItemEntity
 import com.example.mms.Repository.ItemRepository
 import com.example.mms.Repository.asEntity
@@ -95,4 +96,19 @@ class ItemController(val itemRepository: ItemRepository)  {
     @DeleteMapping("api/items/{id}")
     fun deleteItem(@Valid id : Int): ResponseEntity<Any> =
         itemRepository.delete(id)?.let { ResponseEntity.noContent().build() } ?: throw ItemNotFoundException(id)
+
+    @Operation(summary = "Valid and decrease stock of items")
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "200", description = "Items valid and stock decreased",
+            content = [Content(mediaType = "application/json", schema = Schema(implementation = ItemEntity::class))]),
+        ApiResponse(responseCode = "404", description = "Item not found",
+            content = [Content(mediaType = "application/json", schema = Schema(implementation = String::class))]),
+        ApiResponse(responseCode = "409", description = "Not enough stock",
+            content = [Content(mediaType = "application/json", schema = Schema(implementation = String::class))])
+    ])
+    @PostMapping("api/items/validAndDecreaseStock")
+    fun validAndDecreaseStock(@RequestBody @Valid items: List<ItemInCartDTO>): ResponseEntity<Any> {
+        itemRepository.validAndDecreaseStock(items)
+        return ResponseEntity.ok().build()
+    }
 }

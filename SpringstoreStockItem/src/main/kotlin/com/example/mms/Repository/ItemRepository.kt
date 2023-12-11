@@ -1,5 +1,6 @@
 package com.example.mms.Repository
 
+import com.example.mms.Controller.DTO.ItemInCartDTO
 import com.example.mms.Model.Item
 
 interface ItemRepository {
@@ -8,4 +9,5 @@ interface ItemRepository {
     fun create(item: Item) : Result<Item>
     fun update(item: Item) : Result<Item>
     fun delete(id: Int) : Item?
+    fun validAndDecreaseStock(items: List<ItemInCartDTO>)
 }
