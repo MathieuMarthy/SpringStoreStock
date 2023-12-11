@@ -1,5 +1,6 @@
 package com.example.mms.ControllerAdvice
 
+import ItemNotEnoughStockException
 import ItemNotFoundException
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatusCode
@@ -15,7 +16,12 @@ class ItemControllerAdvice : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(ItemNotFoundException::class)
     fun handleConstraintViolationException(e: ItemNotFoundException): ResponseEntity<String> {
-        return ResponseEntity.status(404).body("")
+        return ResponseEntity.status(404).body(e.message)
+    }
+
+    @ExceptionHandler(ItemNotEnoughStockException::class)
+    fun handleConstraintViolationException(e: ItemNotEnoughStockException): ResponseEntity<String> {
+        return ResponseEntity.status(409).body(e.message)
     }
 
     override fun handleMethodArgumentNotValid(
