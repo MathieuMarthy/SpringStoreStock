@@ -6,6 +6,7 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isFailure
 import assertk.assertions.isSuccess
 import com.example.mms.Model.Item
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.util.*
@@ -52,6 +53,8 @@ open class ItemDatabaseTest {
         val item = defaultItem()
         repo.create(item)
         val result = repo.get(item.id)
+        val test = repo.getAll()
+        println(test)
         assertThat(result!!.id).isEqualTo(item.id)
     }
 
@@ -99,15 +102,15 @@ open class ItemDatabaseTest {
     fun `delete existing item`() {
         val item = defaultItem()
         repo.create(item)
-        assertThrows<Exception> {
-            repo.delete(item.id)
-        }
+        val deletedItem = repo.delete(item.id)
+        assertNull(deletedItem)
     }
 
     @Test
     fun `delete non existing item`() {
         val item = defaultItem()
         val result = repo.delete(item.id)
+        println(result)
         assertThat(result).isEqualTo(null)
     }
 
