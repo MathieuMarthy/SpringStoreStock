@@ -2,7 +2,6 @@ package com.example.mms.Controller
 
 import ItemNotFoundException
 import com.example.mms.Controller.DTO.ItemDTO
-import com.example.mms.Controller.DTO.asDTO
 import com.example.mms.Repository.ItemEntity
 import com.example.mms.Repository.ItemRepository
 import com.example.mms.Repository.asEntity
@@ -18,6 +17,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -49,10 +49,11 @@ class ItemController(val itemRepository: ItemRepository)  {
             content = [Content(mediaType = "application/json", schema = Schema(implementation = String::class))])
     ])
     @GetMapping("api/items/{id}")
-    fun getOneItem(@Valid id : Int): ResponseEntity<ItemEntity> {
+    fun getOneItem(@PathVariable @Valid id : Int): ResponseEntity<ItemEntity> {
         val item = itemRepository.get(id) ?: throw ItemNotFoundException(id)
         return ResponseEntity.ok(item.asEntity())
     }
+
     @Operation(summary = "Get all items")
     @ApiResponses(value = [
         ApiResponse(responseCode = "200", description = "Found the items",

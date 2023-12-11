@@ -1,16 +1,20 @@
-    package com.example.mms.Repository
+package com.example.mms.Repository
 
-import com.example.mms.Controller.DTO.asDTO
+import ItemNotFoundException
 import com.example.mms.Model.Item
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 import java.util.*
-import kotlin.jvm.optionals.getOrNull
 
 @Repository
 class ItemDatabaseRepository(private val jpa : ItemJpaRepository) : ItemRepository {
     override fun get(id: Int): Item? {
-        return jpa.findById(id).map { it.asItem() }.get()
+        val item = jpa.findById(id).map { it.asItem() }
+        if (item.isEmpty) {
+            return null
+        }
+
+        return item.get()
     }
 
     override fun getAll(): List<Item?> = jpa.findAll().map { it.asItem() }

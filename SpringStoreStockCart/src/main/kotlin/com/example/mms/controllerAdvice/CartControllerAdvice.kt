@@ -18,22 +18,22 @@ class CartControllerAdvice : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(CartNotFoundException::class)
     fun handleConstraintViolationException(e: CartNotFoundException): ResponseEntity<String> {
-        return ResponseEntity.status(404).body("")
+        return ResponseEntity.status(404).body("cart not found: ${e.message}")
     }
 
     @ExceptionHandler(ItemNotFoundException::class)
     fun handleConstraintViolationException(e: ItemNotFoundException): ResponseEntity<String> {
-        return ResponseEntity.status(404).body("")
+        return ResponseEntity.status(404).body("item not found: ${e.message}")
     }
 
     @ExceptionHandler(ItemNotEnoughStockException::class)
     fun handleConstraintViolationException(e: ItemNotEnoughStockException): ResponseEntity<String> {
-        return ResponseEntity.status(409).body(e.message)
+        return ResponseEntity.status(409).body("not enough stock: ${e.message}")
     }
 
     @ExceptionHandler(CartAlreadyExistsException::class)
     fun handleConstraintViolationException(e: CartAlreadyExistsException): ResponseEntity<String> {
-        return ResponseEntity.status(409).body(e.message)
+        return ResponseEntity.status(409).body("cart already exists: ${e.message}")
     }
 
     override fun handleMethodArgumentNotValid(
