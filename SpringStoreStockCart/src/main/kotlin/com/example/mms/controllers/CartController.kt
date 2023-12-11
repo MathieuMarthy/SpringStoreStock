@@ -111,14 +111,15 @@ class CartController(
     }
 
     @PostMapping("api/cart/{userId}/valid")
-    fun valid(@PathVariable userId: Int): ResponseEntity.BodyBuilder {
+    fun valid(@PathVariable userId: Int): ResponseEntity<String> {
         val cart = this.cartRepository.get(userId) ?: throw CartNotFoundException(userId)
 
-        val res = this.itemService.validItemsInCart(cart)
+        if (!this.itemService.validItemsInCart(cart)) {
+            return ResponseEntity.status(400).body("invalid items in cart")
+        }
 
         this.cartRepository.valid(userId)
-
-        this.userService.updateLastCommandDate(userId)
-        return ResponseEntity.ok()
+        this.userService.updateLastCommandDate(userId) // TODO
+        return ResponseEntity.ok("valid")
     }
 }

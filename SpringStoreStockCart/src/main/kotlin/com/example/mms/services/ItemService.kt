@@ -1,6 +1,7 @@
 package com.example.mms.services
 
 import com.example.mms.dto.ItemDTO
+import com.example.mms.errors.ItemNotEnoughStockException
 import com.example.mms.errors.ItemNotFoundException
 import com.example.mms.models.Cart
 import kotlinx.serialization.json.Json
@@ -10,6 +11,7 @@ import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
+import kotlinx.serialization.encodeToString
 
 
 @Service
@@ -60,11 +62,18 @@ class ItemService(
         return itemDTO.stock >= quantity
     }
 
-    fun validItemsInCart(cart: Cart): List<Int> {
-        TODO()
-    }
+    fun validItemsInCart(cart: Cart): Boolean {
+        val url = this.itemServiceUrl + "/validAndDecreaseStock"
 
-    fun decreaseStock(itemsId: List<Int>, quantities: List<Int>): List<Int> {
-        TODO()
+        val jsonString = this.json.encodeToString(cart.items)
+        println(jsonString)
+        val res = this.request(url, "post", jsonString)
+
+        return when (res.statusCode()) {
+            200 -> true
+            404 -> throw ItemNotFoundException(res.body())
+            409 -> throw ItemNotEnoughStockException(res.body())
+            else -> false
+        }
     }
 }

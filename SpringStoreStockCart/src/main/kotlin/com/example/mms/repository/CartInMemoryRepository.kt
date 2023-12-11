@@ -53,7 +53,6 @@ class CartInMemoryRepository : CartRepository {
         // set the quantity
         item.quantity = quantity
 
-        // TODO: regarde si ca update bien, si le modifier cart change aussi cart dans la liste
         return Result.success(cart)
     }
 
@@ -81,7 +80,7 @@ class CartInMemoryRepository : CartRepository {
     }
 
     override fun valid(id: Int): Boolean {
-        val cart = this.get(id) ?: return false
+        val cart = this.get(id) ?: throw CartNotFoundException(id)
 
         cart.items.clear()
         return true
