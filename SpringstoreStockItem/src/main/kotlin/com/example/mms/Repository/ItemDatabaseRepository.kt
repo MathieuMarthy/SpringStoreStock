@@ -10,6 +10,8 @@ import java.util.*
 class ItemDatabaseRepository(private val jpa : ItemJpaRepository) : ItemRepository {
     override fun get(id: Int): Item? {
         val item = jpa.findById(id).map { it.asItem() }
+        val test = jpa.findById(id)
+        println(test)
         if (item.isEmpty) {
             return null
         }
@@ -19,7 +21,7 @@ class ItemDatabaseRepository(private val jpa : ItemJpaRepository) : ItemReposito
 
     override fun getAll(): List<Item?> = jpa.findAll().map { it.asItem() }
 
-    override fun create(item: Item): Result<Item> = if (jpa.findById(item.id).isPresent) {
+    override fun create(item: Item): Result<Item> = if (jpa.findByName(item.name).isPresent) {
         Result.failure(Exception("Item already in DB"))
     } else {
         item.dateLastUpdate = Date()
@@ -42,4 +44,6 @@ class ItemDatabaseRepository(private val jpa : ItemJpaRepository) : ItemReposito
     }
 }
 
-interface ItemJpaRepository : JpaRepository<ItemEntity, Int>
+interface ItemJpaRepository : JpaRepository<ItemEntity, Int> {
+    fun findByName(name: String) : Optional<ItemEntity>
+}
