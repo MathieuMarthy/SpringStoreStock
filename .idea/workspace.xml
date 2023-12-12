@@ -30,6 +30,7 @@
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="2YrCXsGDMrgdd1HyA9vhpKLcmZH" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -40,7 +41,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "main",
-    "last_opened_file_path": "/home/E216351P/reseau/Perso/Documents/3eme Année/S5/QDev/SpringStoreStock/SpringStoreStockUser",
+    "last_opened_file_path": "E:/Code/kotlin/SpringStoreStock/SpringStoreStockCart",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -69,6 +70,7 @@
       <updated>1701274353717</updated>
       <workItem from="1701274355002" duration="2122000" />
       <workItem from="1701933557739" duration="3007000" />
+      <workItem from="1701958274273" duration="92000" />
     </task>
     <task id="LOCAL-00001" summary="CartInMemory">
       <option name="closed" value="true" />

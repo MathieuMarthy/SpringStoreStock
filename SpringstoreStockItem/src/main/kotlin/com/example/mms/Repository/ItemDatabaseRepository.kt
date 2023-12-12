@@ -1,27 +1,70 @@
 package com.example.mms.Repository
 
+import ItemNotEnoughStockException
+import ItemNotFoundException
+import com.example.mms.Controller.DTO.ItemInCartDTO
 import com.example.mms.Model.Item
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
+import java.util.*
 
 @Repository
 class ItemDatabaseRepository(private val jpa : ItemJpaRepository) : ItemRepository {
     override fun get(id: Int): Item? {
-        return jpa.findById(id).orElse(null)
+        val item = jpa.findById(id).map { it.asItem() }
+        val test = jpa.findById(id)
+        println(test)
+        if (item.isEmpty) {
+            return null
+        }
+
+        return item.get()
     }
 
-    override fun create(item: Item): Result<Item> {
-        return Result.success(jpa.save(item))
+    override fun getAll(): List<Item?> = jpa.findAll().map { it.asItem() }
+
+    override fun create(item: Item): Result<Item> = if (jpa.findByName(item.name).isPresent) {
+        Result.failure(Exception("Item already in DB"))
+    } else {
+        item.dateLastUpdate = Date()
+        val saved = jpa.save(item.asEntity())
+        Result.success(saved.asItem()!!)
     }
 
-    override fun update(item: Item): Result<Item> {
-        return Result.success(jpa.save(item))
+    override fun update(item: Item): Result<Item> = if (jpa.findById(item.id).isPresent) {
+        item.dateLastUpdate = Date()
+        val saved = jpa.save(item.asEntity())
+        Result.success(saved.asItem()!!)
+    } else {
+        Result.failure(Exception("Item not in DB"))
     }
 
-    override fun delete(item: Item): Item? {
-        jpa.delete(item)
-        return item
+    override fun delete(id: Int): Item? {
+        return jpa.findById(id)
+            .also { jpa.deleteById(id) }
+            .map { it.asItem() }.get()
+    }
+
+    override fun validAndDecreaseStock(items: List<ItemInCartDTO>) {
+        val newItems = mutableListOf<Item>()
+        for (item in items) {
+            val itemInDb = jpa.findById(item.itemId).map { it.asItem() }
+            if (itemInDb.isEmpty) {
+                throw ItemNotFoundException(item.itemId)
+            }
+
+            if (itemInDb.get().stock < item.quantity) {
+                throw ItemNotEnoughStockException(item.itemId)
+            }
+            newItems.add(itemInDb.get().copy(stock = itemInDb.get().stock - item.quantity))
+        }
+
+        for (item in newItems) {
+            this.update(item)
+        }
     }
 }
 
-interface ItemJpaRepository : JpaRepository<Item, Int>
+interface ItemJpaRepository : JpaRepository<ItemEntity, Int> {
+    fun findByName(name: String) : Optional<ItemEntity>
+}
