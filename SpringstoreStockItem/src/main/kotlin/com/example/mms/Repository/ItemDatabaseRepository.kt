@@ -13,7 +13,6 @@ class ItemDatabaseRepository(private val jpa : ItemJpaRepository) : ItemReposito
     override fun get(id: Int): Item? {
         val item = jpa.findById(id).map { it.asItem() }
         val test = jpa.findById(id)
-        println(test)
         if (item.isEmpty) {
             return null
         }
@@ -40,9 +39,12 @@ class ItemDatabaseRepository(private val jpa : ItemJpaRepository) : ItemReposito
     }
 
     override fun delete(id: Int): Item? {
-        return jpa.findById(id)
-            .also { jpa.deleteById(id) }
-            .map { it.asItem() }.get()
+        val itemOptional = jpa.findById(id)
+        if (itemOptional.isPresent) {
+            jpa.deleteById(id)
+            return itemOptional.get().asItem()
+        }
+        return null
     }
 
     override fun validAndDecreaseStock(items: List<ItemInCartDTO>) {

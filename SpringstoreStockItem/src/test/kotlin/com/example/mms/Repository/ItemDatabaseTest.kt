@@ -9,6 +9,7 @@ import com.example.mms.Model.Item
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import java.text.SimpleDateFormat
 import java.util.*
 
 open class ItemDatabaseTest {
@@ -73,9 +74,35 @@ open class ItemDatabaseTest {
         repo.create(item)
         repo.create(item2)
         repo.create(item3)
+
         val result = repo.getAll()
-        assertThat(result).containsExactlyInAnyOrder(item, item2, item3)
+
+        // Compare items without dates
+        val resultAllItems = result.map { it!!.copy(dateLastUpdate = null) }
+        val expectedItems = listOf(
+            item.copy(dateLastUpdate = null),
+            item2.copy(dateLastUpdate = null),
+            item3.copy(dateLastUpdate = null)
+        )
+        assertThat(resultAllItems).containsExactlyInAnyOrder(*expectedItems.toTypedArray())
+
+        // Compare dates
+        val resultAllDates = result.map { it!!.dateLastUpdate }
+        val expectedDates = listOf(
+            item.dateLastUpdate,
+            item2.dateLastUpdate,
+            item3.dateLastUpdate
+        )
+        assertThat(resultAllDates.map { cleanMilliseconds(it!!) }).containsExactlyInAnyOrder(*expectedDates.map { cleanMilliseconds(it!!) }.toTypedArray())
     }
+
+    fun cleanMilliseconds(date: Date): Date {
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+        calendar.set(Calendar.MILLISECOND, 0)
+        return calendar.time
+    }
+
     @Test
     fun `get all not working`() {
         val result = repo.getAll()
@@ -103,7 +130,7 @@ open class ItemDatabaseTest {
         val item = defaultItem()
         repo.create(item)
         val deletedItem = repo.delete(item.id)
-        assertNull(deletedItem)
+        assertThat(deletedItem!!.id).isEqualTo(item.id)
     }
 
     @Test
