@@ -114,6 +114,10 @@ class CartController(
     fun valid(@PathVariable userId: Int): ResponseEntity<String> {
         val cart = this.cartRepository.get(userId) ?: throw CartNotFoundException(userId)
 
+        if (cart.items.isEmpty()) {
+            return ResponseEntity.ok("cart is empty")
+        }
+
         if (!this.itemService.validItemsInCart(cart)) {
             return ResponseEntity.status(400).body("invalid items in cart")
         }

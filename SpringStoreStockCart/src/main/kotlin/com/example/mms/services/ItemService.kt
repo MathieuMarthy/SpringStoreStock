@@ -26,6 +26,7 @@ class ItemService(
 
         var requestBuilder = HttpRequest.newBuilder()
             .uri(URI.create(url))
+            .header("Content-Type", "application/json")
 
         requestBuilder = when (method) {
             "post" -> requestBuilder.POST(HttpRequest.BodyPublishers.ofString(body))
