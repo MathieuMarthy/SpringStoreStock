@@ -6,6 +6,7 @@ import com.example.mms.dto.asCartDTO
 import com.example.mms.errors.CartAlreadyExistsException
 import com.example.mms.errors.CartNotFoundException
 import com.example.mms.errors.ItemNotEnoughStockException
+import com.example.mms.errors.UserNotFoundException
 import com.example.mms.repository.CartRepository
 import com.example.mms.services.ItemService
 import com.example.mms.services.UserService
@@ -26,6 +27,10 @@ class CartController(
 
     @PostMapping("api/cart/{userId}")
     fun create(@PathVariable userId: String): ResponseEntity<CartDTO> {
+        if (!this.userService.userExists(userId)) {
+            throw UserNotFoundException(userId)
+        }
+
         val resCart = this.cartRepository.create(userId)
 
         if (resCart.isFailure) {

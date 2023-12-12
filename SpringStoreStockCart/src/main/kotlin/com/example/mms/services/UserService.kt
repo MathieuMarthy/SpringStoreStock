@@ -16,4 +16,12 @@ class UserService(
 
         return res.statusCode() == 200
     }
+
+    fun userExists(userId: String): Boolean {
+        val url = this.userServiceUrl + "/" + userId
+
+        val res = this.request(url, "get")
+
+        return res.statusCode() == 200
+    }
 }

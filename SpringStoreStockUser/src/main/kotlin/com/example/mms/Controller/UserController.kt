@@ -42,14 +42,14 @@ class UserController(val userRepository: UserRepository) {
             .let { ResponseEntity.ok(it) }
 
     @GetMapping("api/users/{email}")
-    fun getOneUser(@PathVariable @Valid email : String): ResponseEntity<UserDTO> {
+    fun getOneUser(@PathVariable @Valid @Email email : String): ResponseEntity<UserDTO> {
         val user = userRepository.get(email)
         return if (user != null) ResponseEntity.ok(user.asDTO())
-        else throw UserNotFoundException("User not found for the email $email")
+        else throw UserNotFoundException(email)
     }
 
     @PutMapping("api/users/{email}")
-    fun updateUser(@Valid email: String, @RequestBody user : UserDTO): ResponseEntity<Any> =
+    fun updateUser(@PathVariable @Valid @Email email: String, @RequestBody user : UserDTO): ResponseEntity<Any> =
         if ( email != user.email) ResponseEntity.badRequest().body("Email in path and body are not the same")
         else
         userRepository.update(user.asUser()).fold(
@@ -58,11 +58,11 @@ class UserController(val userRepository: UserRepository) {
         )
 
     @DeleteMapping("api/users/{email}")
-    fun deleteUser(@PathVariable @Valid email : String): ResponseEntity<Any> =
+    fun deleteUser(@PathVariable @Valid @Email email : String): ResponseEntity<Any> =
         userRepository.delete(email)?.let { ResponseEntity.noContent().build() }
-        ?: throw UserNotFoundException("User not found for the email $email")
+        ?: throw UserNotFoundException(email)
     
     @PutMapping("api/users/{email}/updateLastCommandDate")
-    fun updateLastCommandDate(@PathVariable @Valid email: String): ResponseEntity<Any> =
+    fun updateLastCommandDate(@PathVariable @Valid @Email email: String): ResponseEntity<Any> =
         userRepository.updateLastCommandDate(email).let { ResponseEntity.noContent().build() }
 }

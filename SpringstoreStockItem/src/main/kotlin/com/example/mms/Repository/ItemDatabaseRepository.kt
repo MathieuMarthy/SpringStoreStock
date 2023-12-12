@@ -10,15 +10,8 @@ import java.util.*
 
 @Repository
 class ItemDatabaseRepository(private val jpa : ItemJpaRepository) : ItemRepository {
-    override fun get(id: Int): Item? {
-        val item = jpa.findById(id).map { it.asItem() }
-        val test = jpa.findById(id)
-        if (item.isEmpty) {
-            return null
-        }
-
-        return item.get()
-    }
+    override fun get(id: Int): Item? =
+        jpa.findById(id).map { it.asItem() }.orElseGet(null)
 
     override fun getAll(): List<Item?> = jpa.findAll().map { it.asItem() }
 

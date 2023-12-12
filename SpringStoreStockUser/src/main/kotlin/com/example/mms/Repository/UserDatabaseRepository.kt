@@ -1,5 +1,6 @@
 package com.example.mms.Repository
 
+import com.example.mms.Errors.UserAlreadyExistsException
 import com.example.mms.Model.User
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
@@ -11,7 +12,7 @@ import kotlin.jvm.optionals.getOrNull
 class UserDatabaseRepository(private val jpa : UserJpaRepository) : UserRepository {
 
     override fun create(user: User): Result<User> = if (jpa.findById(user.email).isPresent) {
-        Result.failure(Exception("User already in DB"))
+        Result.failure(UserAlreadyExistsException(user.email))
     } else {
         val saved = jpa.save(user.asEntity())
         Result.success(saved.asUser())

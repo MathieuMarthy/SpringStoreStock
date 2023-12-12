@@ -1,9 +1,6 @@
 package com.example.mms.controllerAdvice
 
-import com.example.mms.errors.CartAlreadyExistsException
-import com.example.mms.errors.CartNotFoundException
-import com.example.mms.errors.ItemNotEnoughStockException
-import com.example.mms.errors.ItemNotFoundException
+import com.example.mms.errors.*
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity
@@ -34,6 +31,11 @@ class CartControllerAdvice : ResponseEntityExceptionHandler() {
     @ExceptionHandler(CartAlreadyExistsException::class)
     fun handleConstraintViolationException(e: CartAlreadyExistsException): ResponseEntity<String> {
         return ResponseEntity.status(409).body("cart already exists: ${e.message}")
+    }
+
+    @ExceptionHandler(UserNotFoundException::class)
+    fun handleConstraintViolationException(e: UserNotFoundException): ResponseEntity<String> {
+        return ResponseEntity.status(404).body("user not found: ${e.message}")
     }
 
     override fun handleMethodArgumentNotValid(
