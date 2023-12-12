@@ -25,7 +25,7 @@ class CartController(
 ) {
 
     @PostMapping("api/cart/{userId}")
-    fun create(@PathVariable userId: Int): ResponseEntity<CartDTO> {
+    fun create(@PathVariable userId: String): ResponseEntity<CartDTO> {
         val resCart = this.cartRepository.create(userId)
 
         if (resCart.isFailure) {
@@ -40,14 +40,14 @@ class CartController(
     }
 
     @GetMapping("api/cart/{userId}")
-    fun get(@PathVariable userId: Int): ResponseEntity<CartDTO> {
+    fun get(@PathVariable userId: String): ResponseEntity<CartDTO> {
         val cart = this.cartRepository.get(userId) ?: throw CartNotFoundException(userId)
 
         return ResponseEntity.ok(cart.asCartDTO())
     }
 
     @DeleteMapping("api/cart/{userId}")
-    fun delete(@PathVariable userId: Int): ResponseEntity<CartDTO> {
+    fun delete(@PathVariable userId: String): ResponseEntity<CartDTO> {
         val resCart = this.cartRepository.delete(userId)
 
         if (resCart.isFailure) {
@@ -59,7 +59,7 @@ class CartController(
 
     @PostMapping("api/cart/{userId}/item")
     fun addItem(
-        @PathVariable userId: Int,
+        @PathVariable userId: String,
         @RequestBody @Valid updateItemRequestDTO: ItemRequestDTO
     ): ResponseEntity<CartDTO> {
         if (!this.itemService.haveEnoughStock(
@@ -80,7 +80,7 @@ class CartController(
 
     @PutMapping("api/cart/{userId}/item")
     fun updateItem(
-        @PathVariable userId: Int,
+        @PathVariable userId: String,
         @RequestBody updateItemRequestDTO: ItemRequestDTO
     ): ResponseEntity<CartDTO> {
         if (!this.itemService.haveEnoughStock(
@@ -100,7 +100,7 @@ class CartController(
     }
 
     @DeleteMapping("api/cart/{userId}/item")
-    fun deleteItem(@PathVariable userId: Int, @RequestBody itemId: Int): ResponseEntity<CartDTO> {
+    fun deleteItem(@PathVariable userId: String, @RequestBody itemId: Int): ResponseEntity<CartDTO> {
         val resCart = this.cartRepository.deleteItem(userId, itemId)
 
         if (resCart.isFailure) {
@@ -111,7 +111,7 @@ class CartController(
     }
 
     @PostMapping("api/cart/{userId}/valid")
-    fun valid(@PathVariable userId: Int): ResponseEntity<String> {
+    fun valid(@PathVariable userId: String): ResponseEntity<String> {
         val cart = this.cartRepository.get(userId) ?: throw CartNotFoundException(userId)
 
         if (cart.items.isEmpty()) {
@@ -123,7 +123,7 @@ class CartController(
         }
 
         this.cartRepository.valid(userId)
-        this.userService.updateLastCommandDate(userId) // TODO
+        this.userService.updateLastCommandDate(userId)
         return ResponseEntity.ok("valid")
     }
 }

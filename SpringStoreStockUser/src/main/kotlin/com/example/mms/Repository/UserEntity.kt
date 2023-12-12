@@ -9,12 +9,12 @@ import java.util.*
 @Entity
 @Table(name = "users")
 data class UserEntity(
-    @Id val email: String,
-    val firstName: String,
-    val lastName: String,
-    val address: String,
-    val followingNewsletter: Boolean,
-    val lastCommand: Date
+        @Id val email: String,
+        val firstName: String,
+        val lastName: String,
+        val address: String,
+        val followingNewsletter: Boolean,
+        var lastCommand: Date
 ) {
     fun asUser() = User(email, firstName, lastName, address, followingNewsletter, lastCommand)
 }

@@ -4,23 +4,23 @@ import com.example.mms.models.Cart
 import org.springframework.data.jpa.repository.JpaRepository
 
 class CartDatabaseRepository(private val jpa: CartJpaRepository) : CartRepository {
-    override fun get(id: Int): Cart? {
+    override fun get(id: String): Cart? {
         TODO("Not yet implemented")
     }
 
-    override fun create(id: Int): Result<Cart> {
+    override fun create(id: String): Result<Cart> {
         TODO("Not yet implemented")
     }
 
-    override fun addItem(id: Int, itemId: Int, quantity: Int): Result<Cart> {
+    override fun addItem(id: String, itemId: Int, quantity: Int): Result<Cart> {
         TODO("Not yet implemented")
     }
 
-    override fun updateItem(id: Int, itemId: Int, quantity: Int): Result<Cart> {
+    override fun updateItem(id: String, itemId: Int, quantity: Int): Result<Cart> {
         TODO("Not yet implemented")
     }
 
-    override fun deleteItem(id: Int, itemId: Int): Result<Cart> {
+    override fun deleteItem(id: String, itemId: Int): Result<Cart> {
         TODO("Not yet implemented")
     }
 
@@ -28,11 +28,11 @@ class CartDatabaseRepository(private val jpa: CartJpaRepository) : CartRepositor
         TODO("Not yet implemented")
     }
 
-    override fun delete(id: Int): Result<Cart> {
+    override fun delete(id: String): Result<Cart> {
         TODO("Not yet implemented")
     }
 
-    override fun valid(id: Int): Boolean {
+    override fun valid(id: String): Boolean {
         TODO("Not yet implemented")
     }
 

@@ -9,4 +9,5 @@ interface UserRepository {
     fun get(email: String): User?
     fun update(user: User): Result<User>
     fun delete(email: String): User?
+    fun updateLastCommandDate(email: String): Result<User>
 }

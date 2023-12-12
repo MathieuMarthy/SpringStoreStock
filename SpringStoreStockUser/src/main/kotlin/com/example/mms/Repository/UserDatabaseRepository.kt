@@ -4,6 +4,7 @@ import com.example.mms.Model.User
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 import org.springframework.stereotype.Service
+import java.util.*
 import kotlin.jvm.optionals.getOrNull
 
 @Repository
@@ -35,6 +36,16 @@ class UserDatabaseRepository(private val jpa : UserJpaRepository) : UserReposito
         return jpa.findById(email)
             .also { jpa.deleteById(email) }
             .map { it.asUser() }.getOrNull()
+    }
+
+    override fun updateLastCommandDate(email: String): Result<User> {
+        val user = jpa.findById(email)
+        if (user.isPresent) {
+            user.get().lastCommand = Date()
+            val saved = jpa.save(user.get())
+            return Result.success(saved.asUser())
+        }
+        return Result.failure(Exception("User not in DB"))
     }
 }
 

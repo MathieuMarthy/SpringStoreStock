@@ -6,7 +6,7 @@ import jakarta.persistence.*
 @Table(name = "carts")
 data class Cart(
     @Id
-    val id: Int,
+    val id: String,
 
     @OneToMany(cascade = [CascadeType.ALL])
     @JoinColumn(referencedColumnName = "id")
