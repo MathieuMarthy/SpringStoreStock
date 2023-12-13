@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class ItemService(
-        @Value("\${url.itemAPI}") private val itemServiceUrl: String
+    @Value("\${url.itemAPI}") private val itemServiceUrl: String
 ) : ServiceRequest() {
 
     private val json = Json { ignoreUnknownKeys = true }

@@ -41,10 +41,10 @@ class CartDatabaseRepository(private val jpa: CartJpaRepository) : CartRepositor
         }
 
         cart.items.add(
-                ItemInCart(
-                        itemId,
-                        quantity
-                )
+            ItemInCart(
+                itemId,
+                quantity
+            )
         )
         logger.info("Adding item $itemId to cart $id")
         return this.jpa.save(cart)

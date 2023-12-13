@@ -2,7 +2,6 @@ package com.example.mms.controllers
 
 import com.example.mms.repository.CartRepository
 import com.example.mms.services.UserService
-import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Nested
