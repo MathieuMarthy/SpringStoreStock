@@ -81,7 +81,7 @@ class ItemController(val itemRepository: ItemRepository)  {
     fun updateItem(@Valid id: Int, @RequestBody item : ItemDTO): ResponseEntity<Any> {
         val itemInDB = itemRepository.get(id)
         return if ( itemInDB == null) ResponseEntity.notFound().build()
-        else itemRepository.update(item.asItem()).fold(
+        else itemRepository.update(id, item.asItem()).fold(
             { s -> ResponseEntity.ok(s.asEntity())},
             { e -> ResponseEntity.status(HttpStatus.CONFLICT).build() }
         )
