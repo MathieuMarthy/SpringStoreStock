@@ -3,9 +3,9 @@ package com.example.mms.repository
 import com.example.mms.errors.*
 import com.example.mms.models.Cart
 import com.example.mms.models.ItemInCart
-import org.springframework.stereotype.Service
+import org.springframework.stereotype.Repository
 
-@Service
+@Repository
 class CartInMemoryRepository : CartRepository {
 
     private val carts = mutableMapOf<String, Cart>()

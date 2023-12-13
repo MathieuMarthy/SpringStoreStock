@@ -8,14 +8,19 @@ import com.example.mms.models.Cart
 import com.example.mms.models.ItemInCart
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.stereotype.Repository
 
+@Repository
 class CartDatabaseRepository(private val jpa: CartJpaRepository) : CartRepository {
     override fun get(id: String): Cart? {
         return this.jpa.findByIdOrNull(id)
     }
 
     override fun create(id: String): Result<Cart> {
-        this.get(id) ?: return Result.failure(CartNotFoundException(id))
+        val item = this.get(id)
+        if (item != null) {
+            return Result.failure(CartNotFoundException(id))
+        }
 
         val cart = Cart(id)
         return Result.success(this.jpa.save(cart))
