@@ -80,7 +80,9 @@ class ItemController(val itemRepository: ItemRepository)  {
     @PutMapping("api/items/{id}")
     fun updateItem(@Valid id: Int, @RequestBody item : ItemDTO): ResponseEntity<Any> {
         val itemInDB = itemRepository.get(id)
+        // check if item exists
         return if ( itemInDB == null) ResponseEntity.notFound().build()
+        // else update item
         else itemRepository.update(id, item.asItem()).fold(
             { s -> ResponseEntity.ok(s.asEntity())},
             { e -> ResponseEntity.status(HttpStatus.CONFLICT).build() }

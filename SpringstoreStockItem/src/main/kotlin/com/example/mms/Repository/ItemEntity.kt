@@ -14,6 +14,7 @@ data class ItemEntity (
     val price : Double,
     val stock : Int,
 
+    // Automatically updated by Hibernate
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     val dateLastUpdate : Date?
