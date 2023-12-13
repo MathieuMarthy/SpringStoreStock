@@ -5,7 +5,7 @@ import com.example.mms.models.Cart
 import com.example.mms.models.ItemInCart
 import org.springframework.stereotype.Repository
 
-@Repository
+// @Repository
 class CartInMemoryRepository : CartRepository {
 
     private val carts = mutableMapOf<String, Cart>()

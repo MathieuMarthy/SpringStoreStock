@@ -13,9 +13,6 @@ abstract class CartDatabaseTest {
 
     lateinit var repository: CartRepository
 
-    @MockkBean
-    lateinit var userService: UserService
-
     private val id = "salut@cc.fr"
     private val item = ItemInCart(1, 1)
     private val item2 = ItemInCart(2, 22)
