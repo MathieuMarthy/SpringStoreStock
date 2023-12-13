@@ -88,14 +88,14 @@ open class UserDatabaseTest {
         val user = defaultUser()
         repo.create(user)
         val user2 = defaultUser(firstName = "cc")
-        val result = repo.update(user2)
+        val result = repo.update(user2.email,user2)
         assertThat(result).isSuccess().isEqualTo(user2)
     }
 
     @Test
     fun `update one not working`() {
         val user = defaultUser()
-        val result = repo.update(user)
+        val result = repo.update(user.email,user)
         assertThat(result).isFailure()
     }
 
