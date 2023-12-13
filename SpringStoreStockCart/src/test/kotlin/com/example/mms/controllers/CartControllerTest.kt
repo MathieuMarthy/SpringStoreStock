@@ -1,16 +1,11 @@
 package com.example.mms.controllers
 
-import assertk.assertThat
-import assertk.assertions.isEqualTo
-import com.example.mms.controllerAdvice.CartControllerAdvice
 import com.example.mms.repository.CartRepository
-import com.example.mms.services.ItemService
 import com.example.mms.services.UserService
-import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
+import io.mockk.mockk
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.test.web.servlet.MockMvc
@@ -22,17 +17,14 @@ class CartControllerTest {
     @Autowired
     private lateinit var mockMvc: MockMvc
 
-    @MockkBean
-    lateinit var cartRepository: CartRepository
-
-    @MockkBean
-    lateinit var userService: UserService
-
-    @MockkBean
-    lateinit var itemService: ItemService
+    private val userService: UserService = mockk()
 
     @Autowired
-    lateinit var cartController: CartController
+    private lateinit var cartRepository: CartRepository
+
+    @Autowired
+    private lateinit var cartController: CartController
+
 
     private val id = "salut@cc.fr"
 
@@ -45,7 +37,7 @@ class CartControllerTest {
             every { userService.userExists(any()) } returns true
 
             mockMvc.get(url + id)
-                    .andExpect { status { isOk() } }
+                .andExpect { status { isOk() } }
         }
 
         @Test
@@ -53,7 +45,7 @@ class CartControllerTest {
             every { userService.userExists(any()) } returns false
 
             mockMvc.get(url + id)
-                    .andExpect { status { isNotFound() } }
+                .andExpect { status { isNotFound() } }
         }
 
         @Test
@@ -61,10 +53,10 @@ class CartControllerTest {
             every { userService.userExists(any()) } returns true
 
             mockMvc.get(url + id)
-                    .andExpect { status { isOk() } }
+                .andExpect { status { isOk() } }
 
             mockMvc.get(url + id)
-                    .andExpect { status { isConflict() } }
+                .andExpect { status { isConflict() } }
         }
     }
 }

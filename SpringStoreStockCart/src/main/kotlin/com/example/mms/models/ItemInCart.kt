@@ -10,7 +10,7 @@ import kotlinx.serialization.Serializable
 @Entity
 @Table(name = "itemsInCart")
 class ItemInCart(
-        @Id
-        val itemId: Int,
-        var quantity: Int,
+    @Id
+    val itemId: Int,
+    var quantity: Int,
 )

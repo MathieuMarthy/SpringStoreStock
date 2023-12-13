@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class UserService(
-        @Value("\${url.userAPI}") private val userServiceUrl: String
+    @Value("\${url.userAPI}") private val userServiceUrl: String
 ) : ServiceRequest() {
 
     fun updateLastCommandDate(userId: String): Boolean {

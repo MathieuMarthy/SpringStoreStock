@@ -10,8 +10,8 @@ open class ServiceRequest {
         val client = HttpClient.newBuilder().build()
 
         var requestBuilder = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .header("Content-Type", "application/json")
+            .uri(URI.create(url))
+            .header("Content-Type", "application/json")
 
         requestBuilder = when (method) {
             "post" -> requestBuilder.POST(HttpRequest.BodyPublishers.ofString(body))
@@ -22,6 +22,6 @@ open class ServiceRequest {
 
         val request = requestBuilder.build()
 
-        return client.send(request, HttpResponse.BodyHandlers.ofString());
+        return client.send(request, HttpResponse.BodyHandlers.ofString())
     }
 }

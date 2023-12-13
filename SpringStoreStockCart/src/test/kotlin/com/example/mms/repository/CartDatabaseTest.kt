@@ -1,7 +1,9 @@
 package com.example.mms.repository
 
 import assertk.assertThat
-import assertk.assertions.*
+import assertk.assertions.isEqualTo
+import assertk.assertions.isNotNull
+import assertk.assertions.isTrue
 import com.example.mms.errors.CartAlreadyExistsException
 import com.example.mms.errors.CartNotFoundException
 import com.example.mms.errors.ItemAlreadyExistsException
