@@ -58,7 +58,7 @@ class CartInMemoryRepository : CartRepository {
 
 
     override fun update(newCart: Cart): Result<Cart> {
-        if (this.exists(newCart.id)) {
+        if (!this.exists(newCart.id)) {
             return Result.failure(CartNotFoundException(newCart.id))
         }
 
@@ -80,7 +80,7 @@ class CartInMemoryRepository : CartRepository {
     }
 
     override fun valid(id: String): Boolean {
-        val cart = this.get(id) ?: throw CartNotFoundException(id)
+        val cart = this.get(id) ?: return false
 
         cart.items.clear()
         return true

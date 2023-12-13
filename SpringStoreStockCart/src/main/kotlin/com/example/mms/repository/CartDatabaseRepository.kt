@@ -76,7 +76,7 @@ class CartDatabaseRepository(private val jpa: CartJpaRepository) : CartRepositor
     }
 
     override fun valid(id: String): Boolean {
-        val cart = this.get(id) ?: throw CartNotFoundException(id)
+        val cart = this.get(id) ?: return false
 
         cart.items.clear()
         this.jpa.save(cart)

@@ -124,7 +124,7 @@ class CartController(
         }
 
         if (!this.itemService.validItemsInCart(cart)) {
-            return ResponseEntity.status(400).body("invalid items in cart")
+            throw CartNotFoundException(userId)
         }
 
         this.cartRepository.valid(userId)
