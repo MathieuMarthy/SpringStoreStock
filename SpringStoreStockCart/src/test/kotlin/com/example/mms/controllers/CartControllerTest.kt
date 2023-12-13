@@ -2,16 +2,25 @@ package com.example.mms.controllers
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import com.example.mms.controllerAdvice.CartControllerAdvice
 import com.example.mms.repository.CartRepository
+import com.example.mms.services.ItemService
 import com.example.mms.services.UserService
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.get
 
-@SpringBootTest
+@WebMvcTest(CartController::class)
 class CartControllerTest {
+
+    @Autowired
+    private lateinit var mockMvc: MockMvc
 
     @MockkBean
     lateinit var cartRepository: CartRepository
@@ -19,40 +28,43 @@ class CartControllerTest {
     @MockkBean
     lateinit var userService: UserService
 
+    @MockkBean
+    lateinit var itemService: ItemService
+
     @Autowired
     lateinit var cartController: CartController
 
-    @Test
-    fun create() {
-        every { userService.userExists(any()) } returns true
-        val id = "salut@cc.fr"
+    private val id = "salut@cc.fr"
 
-        val res = cartController.create(id)
+    @Nested
+    inner class Create {
+        private val url = "/api/cart/"
 
-        assertThat(res.statusCode).isEqualTo(201)
-    }
+        @Test
+        fun `with valid user`() {
+            every { userService.userExists(any()) } returns true
 
-    @Test
-    fun get() {
-    }
+            mockMvc.get(url + id)
+                    .andExpect { status { isOk() } }
+        }
 
-    @Test
-    fun delete() {
-    }
+        @Test
+        fun `with invalid user`() {
+            every { userService.userExists(any()) } returns false
 
-    @Test
-    fun addItem() {
-    }
+            mockMvc.get(url + id)
+                    .andExpect { status { isNotFound() } }
+        }
 
-    @Test
-    fun updateItem() {
-    }
+        @Test
+        fun `create twice`() {
+            every { userService.userExists(any()) } returns true
 
-    @Test
-    fun deleteItem() {
-    }
+            mockMvc.get(url + id)
+                    .andExpect { status { isOk() } }
 
-    @Test
-    fun valid() {
+            mockMvc.get(url + id)
+                    .andExpect { status { isConflict() } }
+        }
     }
 }
