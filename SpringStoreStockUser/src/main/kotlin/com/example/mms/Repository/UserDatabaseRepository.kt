@@ -5,13 +5,11 @@ import com.example.mms.Model.User
 import org.slf4j.LoggerFactory
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
-import org.springframework.stereotype.Service
 import java.util.*
-import java.util.logging.Logger
 import kotlin.jvm.optionals.getOrNull
 
 @Repository
-class UserDatabaseRepository(private val jpa : UserJpaRepository) : UserRepository {
+class UserDatabaseRepository(private val jpa: UserJpaRepository) : UserRepository {
 
     private var logger = LoggerFactory.getLogger(javaClass)
 
@@ -26,7 +24,7 @@ class UserDatabaseRepository(private val jpa : UserJpaRepository) : UserReposito
 
     override fun getAll(): List<User> = jpa.findAll().map { it.asUser() }
 
-    override fun getAllNewsletterFollowers(): List<User> =  jpa.findAllByFollowingNewsletter(true).map { it.asUser() }
+    override fun getAllNewsletterFollowers(): List<User> = jpa.findAllByFollowingNewsletter(true).map { it.asUser() }
 
     override fun get(email: String): User? {
         return jpa.findById(email).map { it.asUser() }.getOrNull()
@@ -48,11 +46,12 @@ class UserDatabaseRepository(private val jpa : UserJpaRepository) : UserReposito
     }
 
     override fun updateLastCommandDate(email: String): Result<User> {
-        val user = jpa.findById(email)
-        if (user.isPresent) {
-            user.get().lastCommand = Date()
-            val saved = jpa.save(user.get())
-            logger.info("Updating last command date for user ${user.get().email}")
+        val optionalUser = jpa.findById(email)
+        if (optionalUser.isPresent) {
+            val user = optionalUser.get()
+            user.lastCommand = Date()
+            val saved = jpa.save(user)
+            logger.info("Updating last command date for user ${user.email}")
             return Result.success(saved.asUser())
         }
         logger.error("User $email not found")
@@ -61,5 +60,5 @@ class UserDatabaseRepository(private val jpa : UserJpaRepository) : UserReposito
 }
 
 interface UserJpaRepository : JpaRepository<UserEntity, String> {
-    fun findAllByFollowingNewsletter(followingNewsletter: Boolean) : List<UserEntity>
+    fun findAllByFollowingNewsletter(followingNewsletter: Boolean): List<UserEntity>
 }

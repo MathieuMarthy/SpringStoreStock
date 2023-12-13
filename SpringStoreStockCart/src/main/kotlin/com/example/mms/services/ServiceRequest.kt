@@ -22,6 +22,6 @@ open class ServiceRequest {
 
         val request = requestBuilder.build()
 
-        return client.send(request, HttpResponse.BodyHandlers.ofString())
+        return client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 }

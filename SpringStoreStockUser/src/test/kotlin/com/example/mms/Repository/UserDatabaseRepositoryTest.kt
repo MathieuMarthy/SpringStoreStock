@@ -7,13 +7,13 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 
 @DataJpaTest
 class UserDatabaseRepositoryTest : UserDatabaseTest() {
-        @Autowired
-        private lateinit var jpa : UserJpaRepository
+    @Autowired
+    private lateinit var jpa: UserJpaRepository
 
-        @BeforeEach
-        fun setup() {
-            repo = UserDatabaseRepository(jpa)
-            jpa.deleteAll()
-        }
+    @BeforeEach
+    fun setup() {
+        repo = UserDatabaseRepository(jpa)
+        jpa.deleteAll()
+    }
 
 }

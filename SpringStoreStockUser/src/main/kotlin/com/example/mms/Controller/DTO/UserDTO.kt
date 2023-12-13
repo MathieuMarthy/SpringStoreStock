@@ -12,6 +12,6 @@ data class UserDTO(
     @field:Size(min = 1, max = 30) val lastName: String,
     @field:Size(min = 1, max = 30) val address: String,
     @field:BooleanFlag val followingNewsletter: Boolean
-    ){
-    fun asUser() = User(email, firstName, lastName, address,followingNewsletter,null)
+) {
+    fun asUser() = User(email, firstName, lastName, address, followingNewsletter, null)
 }
