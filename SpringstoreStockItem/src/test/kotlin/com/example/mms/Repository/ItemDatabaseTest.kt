@@ -6,10 +6,7 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isFailure
 import assertk.assertions.isSuccess
 import com.example.mms.Model.Item
-import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
-import java.text.SimpleDateFormat
 import java.util.*
 
 open class ItemDatabaseTest {
@@ -96,7 +93,7 @@ open class ItemDatabaseTest {
         assertThat(resultAllDates.map { cleanMilliseconds(it!!) }).containsExactlyInAnyOrder(*expectedDates.map { cleanMilliseconds(it!!) }.toTypedArray())
     }
 
-    fun cleanMilliseconds(date: Date): Date {
+    private fun cleanMilliseconds(date: Date): Date {
         val calendar = Calendar.getInstance()
         calendar.time = date
         calendar.set(Calendar.MILLISECOND, 0)

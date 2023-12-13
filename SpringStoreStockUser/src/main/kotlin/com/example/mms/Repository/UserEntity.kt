@@ -14,8 +14,8 @@ data class UserEntity(
         val lastName: String,
         val address: String,
         val followingNewsletter: Boolean,
-        var lastCommand: Date
+        var lastCommand: Date?
 ) {
     fun asUser() = User(email, firstName, lastName, address, followingNewsletter, lastCommand)
 }
-fun User.asEntity() = UserEntity(email, firstName, lastName, address, followingNewsletter, lastCommand)
+fun User.asEntity() = UserEntity(email, firstName, lastName, address, followingNewsletter, null)
