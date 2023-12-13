@@ -49,16 +49,19 @@ class CartController(
     )
     @PostMapping("api/cart/{userId}")
     fun create(@PathVariable userId: String): ResponseEntity<CartDTO> {
+        // check if user exists
         if (!this.userService.userExists(userId)) {
             throw UserNotFoundException(userId)
         }
 
         val resCart = this.cartRepository.create(userId)
 
+        // get the location of the created cart
         val location: URI = ServletUriComponentsBuilder
             .fromCurrentRequest()
             .buildAndExpand()
             .toUri()
+
         return ResponseEntity.created(location).body(resCart.asCartDTO())
     }
 
@@ -78,7 +81,6 @@ class CartController(
     @GetMapping("api/cart/{userId}")
     fun get(@PathVariable userId: String): ResponseEntity<CartDTO> {
         val cart = this.cartRepository.get(userId)
-
         return ResponseEntity.ok(cart.asCartDTO())
     }
 
@@ -126,6 +128,7 @@ class CartController(
         @PathVariable userId: String,
         @RequestBody @Valid updateItemRequestDTO: ItemRequestDTO
     ): ResponseEntity<CartDTO> {
+        // check if item has enough stock in the item api
         if (!this.itemService.haveEnoughStock(
                 updateItemRequestDTO.itemId,
                 updateItemRequestDTO.quantity
@@ -134,6 +137,7 @@ class CartController(
             throw ItemNotEnoughStockException(updateItemRequestDTO.itemId)
         }
 
+        // add item to cart and return the created cart
         val resCart = this.cartRepository.addItem(userId, updateItemRequestDTO.itemId, updateItemRequestDTO.quantity)
         return ResponseEntity.ok(resCart.asCartDTO())
     }
@@ -167,6 +171,7 @@ class CartController(
         @PathVariable userId: String,
         @RequestBody updateItemRequestDTO: ItemRequestDTO
     ): ResponseEntity<CartDTO> {
+        // check if item has enough stock in the item api
         if (!this.itemService.haveEnoughStock(
                 updateItemRequestDTO.itemId,
                 updateItemRequestDTO.quantity
@@ -175,6 +180,7 @@ class CartController(
             throw ItemNotEnoughStockException(updateItemRequestDTO.itemId)
         }
 
+        // update item in cart and return the updated cart
         val resCart = this.cartRepository.updateItem(userId, updateItemRequestDTO.itemId, updateItemRequestDTO.quantity)
         return ResponseEntity.ok(resCart.asCartDTO())
     }
@@ -224,17 +230,22 @@ class CartController(
     )
     @PostMapping("api/cart/{userId}/valid")
     fun valid(@PathVariable userId: String): ResponseEntity<String> {
+        // get the cart, throw exception if not found
         val cart = this.cartRepository.get(userId)
 
         if (cart.items.isEmpty()) {
             return ResponseEntity.ok("cart is empty")
         }
 
+        // call the item api to check if all items have enough stock and decrease the stock
         if (!this.itemService.validItemsInCart(cart)) {
             throw CartNotFoundException(userId)
         }
 
+        // clear the cart
         this.cartRepository.valid(userId)
+
+        // update the last command date of the user
         this.userService.updateLastCommandDate(userId)
         return ResponseEntity.ok("valid")
     }

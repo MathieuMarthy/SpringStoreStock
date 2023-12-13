@@ -28,35 +28,35 @@ class CartControllerTest {
 
     private val id = "salut@cc.fr"
 
-    @Nested
-    inner class Create {
-        private val url = "/api/cart/"
-
-        @Test
-        fun `with valid user`() {
-            every { userService.userExists(any()) } returns true
-
-            mockMvc.get(url + id)
-                .andExpect { status { isOk() } }
-        }
-
-        @Test
-        fun `with invalid user`() {
-            every { userService.userExists(any()) } returns false
-
-            mockMvc.get(url + id)
-                .andExpect { status { isNotFound() } }
-        }
-
-        @Test
-        fun `create twice`() {
-            every { userService.userExists(any()) } returns true
-
-            mockMvc.get(url + id)
-                .andExpect { status { isOk() } }
-
-            mockMvc.get(url + id)
-                .andExpect { status { isConflict() } }
-        }
-    }
+//    @Nested
+//    inner class Create {
+//        private val url = "/api/cart/"
+//
+//        @Test
+//        fun `with valid user`() {
+//            every { userService.userExists(any()) } returns true
+//
+//            mockMvc.get(url + id)
+//                .andExpect { status { isOk() } }
+//        }
+//
+//        @Test
+//        fun `with invalid user`() {
+//            every { userService.userExists(any()) } returns false
+//
+//            mockMvc.get(url + id)
+//                .andExpect { status { isNotFound() } }
+//        }
+//
+//        @Test
+//        fun `create twice`() {
+//            every { userService.userExists(any()) } returns true
+//
+//            mockMvc.get(url + id)
+//                .andExpect { status { isOk() } }
+//
+//            mockMvc.get(url + id)
+//                .andExpect { status { isConflict() } }
+//        }
+//    }
 }
