@@ -40,6 +40,7 @@ class UserController(val userRepository: UserRepository) {
             )
         ]
     )
+    // Post mapping for creating a user, we use the DTO so the user don't have to provide his ID and last command date
     @PostMapping("api/users")
     fun create(@RequestBody @Valid user: UserDTO): ResponseEntity<UserEntity> =
         userRepository.create(user.asUser()).fold(

@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size
 import jdk.jfr.BooleanFlag
 
 
+// DTO for creating a user
 data class UserDTO(
     @field:Email val email: String,
     @field:Size(min = 1, max = 30) val firstName: String,

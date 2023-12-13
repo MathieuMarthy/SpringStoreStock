@@ -4,6 +4,7 @@ import com.example.mms.Model.User
 import jakarta.validation.constraints.Size
 import jdk.jfr.BooleanFlag
 
+// DTO for updating a user (no email)
 data class UserUpdateDTO(
     @field:Size(min = 1, max = 30) val firstName: String,
     @field:Size(min = 1, max = 30) val lastName: String,
