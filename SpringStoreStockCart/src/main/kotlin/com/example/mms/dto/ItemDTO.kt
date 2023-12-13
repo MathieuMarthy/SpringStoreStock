@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ItemDTO(
-    val name: String,
-    val price: Double,
-    val stock: Int
+        val name: String,
+        val price: Double,
+        val stock: Int
 )

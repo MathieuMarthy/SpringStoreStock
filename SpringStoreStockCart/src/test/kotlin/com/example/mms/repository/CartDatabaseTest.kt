@@ -2,12 +2,15 @@ package com.example.mms.repository
 
 import assertk.assertThat
 import assertk.assertions.*
+import com.example.mms.errors.CartAlreadyExistsException
+import com.example.mms.errors.CartNotFoundException
+import com.example.mms.errors.ItemAlreadyExistsException
+import com.example.mms.errors.ItemNotFoundException
 import com.example.mms.models.Cart
 import com.example.mms.models.ItemInCart
-import com.example.mms.services.UserService
-import com.ninjasquad.springmockk.MockkBean
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 abstract class CartDatabaseTest {
 
@@ -24,16 +27,15 @@ abstract class CartDatabaseTest {
         fun one() {
             val res = repository.create(id)
 
-            assertThat(res.isSuccess).isTrue()
-            assertThat(res.getOrNull()?.id).isEqualTo(id)
+            assertThat(res).isNotNull()
+            assertThat(res.id).isEqualTo(id)
         }
 
         @Test
         fun `already exists`() {
             repository.create(id)
-            val res = repository.create(id)
 
-            assertThat(res.isFailure).isTrue()
+            assertThrows<CartAlreadyExistsException> { repository.create(id) }
         }
     }
 
@@ -50,9 +52,7 @@ abstract class CartDatabaseTest {
 
         @Test
         fun `not found`() {
-            val res = repository.get(id)
-
-            assertThat(res).isNull()
+            assertThrows<CartNotFoundException> { repository.get(id) }
         }
     }
 
@@ -66,37 +66,34 @@ abstract class CartDatabaseTest {
             val cart = Cart(id, mutableListOf(ItemInCart(1, 1)))
             val res = repository.update(cart)
 
-            assertThat(res.isSuccess).isTrue()
-            assertThat(res.getOrNull()?.items?.size).isEqualTo(1)
+            assertThat(res).isNotNull()
+            assertThat(res.items.size).isEqualTo(1)
         }
 
         @Test
         fun `not found`() {
             val cart = Cart(id, mutableListOf(ItemInCart(1, 1)))
-            val res = repository.update(cart)
 
-            assertThat(res.isFailure).isTrue()
+            assertThrows<CartNotFoundException> { repository.update(cart) }
         }
     }
 
     @Nested
     inner class Delete {
 
-            @Test
-            fun delete() {
-                repository.create(id)
-                val res = repository.delete(id)
+        @Test
+        fun delete() {
+            repository.create(id)
+            val res = repository.delete(id)
 
-                assertThat(res.isSuccess).isTrue()
-                assertThat(repository.get(id)).isNull()
-            }
+            assertThat(res).isNotNull()
+            assertThrows<CartNotFoundException> { repository.get(id) }
+        }
 
-            @Test
-            fun `not found`() {
-                val res = repository.delete(id)
-
-                assertThat(res.isFailure).isTrue()
-            }
+        @Test
+        fun `not found`() {
+            assertThrows<CartNotFoundException> { repository.delete(id) }
+        }
     }
 
     @Nested
@@ -108,16 +105,14 @@ abstract class CartDatabaseTest {
 
             val res = repository.addItem(id, item.itemId, item.quantity)
 
-            assertThat(res.isSuccess).isTrue()
-            assertThat(res.getOrNull()?.items?.size).isEqualTo(1)
-            assertThat(repository.get(id)?.items?.size).isEqualTo(1)
+            assertThat(res).isNotNull()
+            assertThat(res.items.size).isEqualTo(1)
+            assertThat(repository.get(id).items.size).isEqualTo(1)
         }
 
         @Test
         fun `not found`() {
-            val res = repository.addItem(id, item.itemId, item.quantity)
-
-            assertThat(res.isFailure).isTrue()
+            assertThrows<CartNotFoundException> { repository.addItem(id, item.itemId, item.quantity) }
         }
 
         @Test
@@ -125,10 +120,8 @@ abstract class CartDatabaseTest {
             repository.create(id)
             repository.addItem(id, item.itemId, item.quantity)
 
-            val res = repository.addItem(id, item.itemId, item.quantity)
-
-            assertThat(res.isFailure).isTrue()
-            assertThat(repository.get(id)?.items?.size).isEqualTo(1)
+            assertThrows<ItemAlreadyExistsException> { repository.addItem(id, item.itemId, item.quantity) }
+            assertThat(repository.get(id).items.size).isEqualTo(1)
         }
     }
 
@@ -142,24 +135,20 @@ abstract class CartDatabaseTest {
 
             val res = repository.updateItem(id, item.itemId, 2)
 
-            assertThat(res.isSuccess).isTrue()
-            assertThat(res.getOrNull()).isNotNull()
-            assertThat(repository.get(id)?.items?.size).isEqualTo(1)
-            assertThat(repository.get(id)?.items?.first()?.quantity).isEqualTo(2)
+            assertThat(res).isNotNull()
+            assertThat(repository.get(id).items.size).isEqualTo(1)
+            assertThat(repository.get(id).items.first().quantity).isEqualTo(2)
         }
 
         @Test
         fun `item not found`() {
-            val res = repository.updateItem(id, item.itemId, 2)
-
-            assertThat(res.isFailure).isTrue()
+            repository.create(id)
+            assertThrows<ItemNotFoundException> { repository.updateItem(id, item.itemId, 2) }
         }
 
         @Test
         fun `cart not found`() {
-            val res = repository.updateItem(id + "e", item.itemId, 2)
-
-            assertThat(res.isFailure).isTrue()
+            assertThrows<CartNotFoundException> { repository.updateItem(id + "e", item.itemId, 2) }
         }
     }
 
@@ -174,23 +163,19 @@ abstract class CartDatabaseTest {
 
             val res = repository.deleteItem(id, item.itemId)
 
-            assertThat(res.isSuccess).isTrue()
-            assertThat(res.getOrNull()).isNotNull()
-            assertThat(repository.get(id)?.items?.size).isEqualTo(1)
+            assertThat(res).isNotNull()
+            assertThat(repository.get(id).items.size).isEqualTo(1)
         }
 
         @Test
         fun `item not found`() {
-            val res = repository.deleteItem(id, item.itemId)
-
-            assertThat(res.isFailure).isTrue()
+            repository.create(id)
+            assertThrows<ItemNotFoundException> { repository.deleteItem(id, item.itemId) }
         }
 
         @Test
         fun `cart not found`() {
-            val res = repository.deleteItem(id + "e", item.itemId)
-
-            assertThat(res.isFailure).isTrue()
+            assertThrows<CartNotFoundException> { repository.deleteItem(id + "e", item.itemId) }
         }
     }
 
@@ -206,7 +191,7 @@ abstract class CartDatabaseTest {
             val res = repository.valid(id)
 
             assertThat(res).isTrue()
-            assertThat(repository.get(id)?.items?.size).isEqualTo(0)
+            assertThat(repository.get(id).items.size).isEqualTo(0)
         }
 
         @Test
@@ -216,14 +201,12 @@ abstract class CartDatabaseTest {
             val res = repository.valid(id)
 
             assertThat(res).isTrue()
-            assertThat(repository.get(id)?.items?.size).isEqualTo(0)
+            assertThat(repository.get(id).items.size).isEqualTo(0)
         }
 
         @Test
         fun `not found`() {
-            val res = repository.valid(id)
-
-            assertThat(res).isFalse()
+            assertThrows<CartNotFoundException> { repository.valid(id) }
         }
     }
 }

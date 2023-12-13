@@ -5,6 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ItemRequestDTO(
-    val itemId: Int,
-    @field:Min(0) val quantity: Int
+        val itemId: Int,
+        @field:Min(0) val quantity: Int
 )

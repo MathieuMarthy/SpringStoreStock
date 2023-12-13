@@ -3,36 +3,36 @@ package com.example.mms.repository
 import com.example.mms.errors.*
 import com.example.mms.models.Cart
 import com.example.mms.models.ItemInCart
-import org.springframework.stereotype.Repository
 
 // @Repository
 class CartInMemoryRepository : CartRepository {
 
     private val carts = mutableMapOf<String, Cart>()
 
-    override fun get(id: String) = carts[id]
-
-    override fun create(id: String): Result<Cart> {
-        val cart = Cart(id)
-
-        val prev = carts.putIfAbsent(id, cart)
-
-        return if (prev == null) {
-            Result.success(cart)
-        } else {
-            Result.failure(CartAlreadyExistsException("Cart already exists"))
-        }
+    override fun get(id: String): Cart {
+        return this.carts[id] ?: throw CartNotFoundException(id)
     }
 
-    override fun addItem(id: String, itemId: Int, quantity: Int): Result<Cart> {
-        if (!this.exists(id)) {
-            return Result.failure(CartNotFoundException(id))
+    override fun create(id: String): Cart {
+        val cart = Cart(id)
+
+        if (this.exists(id)) {
+            throw CartAlreadyExistsException(id)
         }
 
-        val cart = this.get(id)!!
+        carts.putIfAbsent(id, cart)
+        return cart
+    }
+
+    override fun addItem(id: String, itemId: Int, quantity: Int): Cart {
+        if (!this.exists(id)) {
+            throw CartNotFoundException(id)
+        }
+
+        val cart = this.get(id)
         val item = cart.items.find { i -> i.itemId == itemId }
         if (item != null) {
-            return Result.failure(ItemAlreadyExistsException(item.itemId))
+            throw ItemAlreadyExistsException(item.itemId)
         }
 
         cart.items.add(
@@ -41,46 +41,45 @@ class CartInMemoryRepository : CartRepository {
                 quantity
             )
         )
-        return Result.success(cart)
+        return cart
     }
 
-    override fun updateItem(id: String, itemId: Int, quantity: Int): Result<Cart> {
-        val cart = this.get(id) ?: return Result.failure(CartNotFoundException(id))
+    override fun updateItem(id: String, itemId: Int, quantity: Int): Cart {
+        val cart = this.get(id)
 
         // Check if item is already in the items list
-        val item = cart.items.find { i -> i.itemId == itemId } ?: return Result.failure(ItemNotFoundException(id))
+        val item = cart.items.find { i -> i.itemId == itemId } ?: throw ItemNotFoundException(id)
 
         // set the quantity
         item.quantity = quantity
 
-        return Result.success(cart)
+        return cart
     }
 
-
-    override fun update(newCart: Cart): Result<Cart> {
+        // check if item is in the items list
+    override fun update(newCart: Cart): Cart {
         if (!this.exists(newCart.id)) {
-            return Result.failure(CartNotFoundException(newCart.id))
+            throw CartNotFoundException(newCart.id)
         }
 
         this.carts.replace(newCart.id, newCart)
-        return Result.success(this.get(newCart.id)!!)
+        return this.get(newCart.id)
     }
 
-    override fun deleteItem(id: String, itemId: Int): Result<Cart> {
-        val cart = this.get(id) ?: return Result.failure(ItemNotFoundException(id))
+    override fun deleteItem(id: String, itemId: Int): Cart {
+        val cart = this.get(id)
 
-        cart.items.removeIf { e -> e.itemId == itemId }
-        return Result.success(cart)
+        val item = cart.items.find { i -> i.itemId == itemId } ?: throw ItemNotFoundException(id)
+        cart.items.remove(item)
+        return cart
     }
 
-    override fun delete(id: String): Result<Cart> {
-        val cart = this.carts.remove(id) ?: return Result.failure(CartNotFoundException(id))
-
-        return Result.success(cart)
+    override fun delete(id: String): Cart {
+        return carts.remove(id) ?: throw CartNotFoundException(id)
     }
 
     override fun valid(id: String): Boolean {
-        val cart = this.get(id) ?: return false
+        val cart = this.get(id)
 
         cart.items.clear()
         return true

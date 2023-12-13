@@ -4,16 +4,16 @@ import com.example.mms.dto.ItemDTO
 import com.example.mms.errors.ItemNotEnoughStockException
 import com.example.mms.errors.ItemNotFoundException
 import com.example.mms.models.Cart
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import kotlinx.serialization.encodeToString
 
 
 @Service
 class ItemService(
-    @Value("\${url.itemAPI}") private val itemServiceUrl: String
-): ServiceRequest() {
+        @Value("\${url.itemAPI}") private val itemServiceUrl: String
+) : ServiceRequest() {
 
     private val json = Json { ignoreUnknownKeys = true }
 

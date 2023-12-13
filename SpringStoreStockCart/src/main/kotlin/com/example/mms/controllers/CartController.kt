@@ -11,8 +11,8 @@ import com.example.mms.repository.CartRepository
 import com.example.mms.services.ItemService
 import com.example.mms.services.UserService
 import io.swagger.v3.oas.annotations.Operation
-import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import jakarta.validation.Valid
@@ -26,9 +26,9 @@ import java.net.URI
 @RestController
 @Validated
 class CartController(
-    private val cartRepository: CartRepository,
-    private val itemService: ItemService,
-    private val userService: UserService
+        private val cartRepository: CartRepository,
+        private val itemService: ItemService,
+        private val userService: UserService
 ) {
 
     @Operation(summary = "Create a cart for a user", description = "Create a cart for a user, the user must exist")
@@ -48,15 +48,11 @@ class CartController(
 
         val resCart = this.cartRepository.create(userId)
 
-        if (resCart.isFailure) {
-            throw CartAlreadyExistsException(userId)
-        }
-
         val location: URI = ServletUriComponentsBuilder
-            .fromCurrentRequest()
-            .buildAndExpand()
-            .toUri()
-        return ResponseEntity.created(location).body(resCart.getOrNull()!!.asCartDTO())
+                .fromCurrentRequest()
+                .buildAndExpand()
+                .toUri()
+        return ResponseEntity.created(location).body(resCart.asCartDTO())
     }
 
     @Operation(summary = "Get a cart for a user", description = "Get a cart for a user")
@@ -68,7 +64,7 @@ class CartController(
     ])
     @GetMapping("api/cart/{userId}")
     fun get(@PathVariable userId: String): ResponseEntity<CartDTO> {
-        val cart = this.cartRepository.get(userId) ?: throw CartNotFoundException(userId)
+        val cart = this.cartRepository.get(userId)
 
         return ResponseEntity.ok(cart.asCartDTO())
     }
@@ -83,12 +79,7 @@ class CartController(
     @DeleteMapping("api/cart/{userId}")
     fun delete(@PathVariable userId: String): ResponseEntity<CartDTO> {
         val resCart = this.cartRepository.delete(userId)
-
-        if (resCart.isFailure) {
-            throw CartNotFoundException(userId)
-        }
-
-        return ResponseEntity.ok(resCart.getOrNull()!!.asCartDTO())
+        return ResponseEntity.ok(resCart.asCartDTO())
     }
 
     @Operation(summary = "Add an item to a cart", description = "Add an item to a cart, the item must exist and the quantity must be available")
@@ -102,23 +93,18 @@ class CartController(
     ])
     @PostMapping("api/cart/{userId}/item")
     fun addItem(
-        @PathVariable userId: String,
-        @RequestBody @Valid updateItemRequestDTO: ItemRequestDTO
+            @PathVariable userId: String,
+            @RequestBody @Valid updateItemRequestDTO: ItemRequestDTO
     ): ResponseEntity<CartDTO> {
         if (!this.itemService.haveEnoughStock(
-                updateItemRequestDTO.itemId,
-                updateItemRequestDTO.quantity
-            )) {
+                        updateItemRequestDTO.itemId,
+                        updateItemRequestDTO.quantity
+                )) {
             throw ItemNotEnoughStockException(updateItemRequestDTO.itemId)
         }
 
         val resCart = this.cartRepository.addItem(userId, updateItemRequestDTO.itemId, updateItemRequestDTO.quantity)
-
-        if (resCart.isFailure) {
-            throw resCart.exceptionOrNull()!!
-        }
-
-        return ResponseEntity.ok(resCart.getOrNull()!!.asCartDTO())
+        return ResponseEntity.ok(resCart.asCartDTO())
     }
 
     @Operation(summary = "Update an item in a cart", description = "Update an item in a cart, the item must exist and the quantity must be available")
@@ -134,23 +120,18 @@ class CartController(
     ])
     @PutMapping("api/cart/{userId}/item")
     fun updateItem(
-        @PathVariable userId: String,
-        @RequestBody updateItemRequestDTO: ItemRequestDTO
+            @PathVariable userId: String,
+            @RequestBody updateItemRequestDTO: ItemRequestDTO
     ): ResponseEntity<CartDTO> {
         if (!this.itemService.haveEnoughStock(
-                updateItemRequestDTO.itemId,
-                updateItemRequestDTO.quantity
-            )) {
+                        updateItemRequestDTO.itemId,
+                        updateItemRequestDTO.quantity
+                )) {
             throw ItemNotEnoughStockException(updateItemRequestDTO.itemId)
         }
 
         val resCart = this.cartRepository.updateItem(userId, updateItemRequestDTO.itemId, updateItemRequestDTO.quantity)
-
-        if (resCart.isFailure) {
-            throw CartNotFoundException(userId)
-        }
-
-        return ResponseEntity.ok(resCart.getOrNull()!!.asCartDTO())
+        return ResponseEntity.ok(resCart.asCartDTO())
     }
 
     @Operation(summary = "Delete an item in a cart", description = "Delete an item in a cart")
@@ -165,12 +146,7 @@ class CartController(
     @DeleteMapping("api/cart/{userId}/item")
     fun deleteItem(@PathVariable userId: String, @RequestBody itemId: Int): ResponseEntity<CartDTO> {
         val resCart = this.cartRepository.deleteItem(userId, itemId)
-
-        if (resCart.isFailure) {
-            throw CartNotFoundException(userId)
-        }
-
-        return ResponseEntity.ok(resCart.getOrNull()!!.asCartDTO())
+        return ResponseEntity.ok(resCart.asCartDTO())
     }
 
     @Operation(summary = "Valid a cart", description = "Valid a cart, the cart must not be empty and all items must be valid")

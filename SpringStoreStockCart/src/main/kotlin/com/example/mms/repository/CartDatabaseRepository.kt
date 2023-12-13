@@ -12,71 +12,69 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class CartDatabaseRepository(private val jpa: CartJpaRepository) : CartRepository {
-    override fun get(id: String): Cart? {
-        return this.jpa.findByIdOrNull(id)
+    override fun get(id: String): Cart {
+        return jpa.findByIdOrNull(id) ?: throw CartNotFoundException(id)
     }
 
-    override fun create(id: String): Result<Cart> {
-        val item = this.get(id)
-        if (item != null) {
-            return Result.failure(CartNotFoundException(id))
+    override fun create(id: String): Cart {
+        if (this.jpa.existsById(id)) {
+            throw CartAlreadyExistsException(id)
         }
-
         val cart = Cart(id)
-        return Result.success(this.jpa.save(cart))
+        return this.jpa.save(cart)
     }
 
-    override fun addItem(id: String, itemId: Int, quantity: Int): Result<Cart> {
-        val cart = this.get(id) ?: return Result.failure(CartNotFoundException(id))
+    override fun addItem(id: String, itemId: Int, quantity: Int): Cart {
+        val cart = this.get(id)
 
         // Check if item is already in the items list
         val item = cart.items.find { i -> i.itemId == itemId }
 
         if (item != null) {
-            return Result.failure(ItemAlreadyExistsException(id))
+            throw ItemAlreadyExistsException(id)
         }
 
         cart.items.add(
-            ItemInCart(
-                itemId,
-                quantity
-            )
+                ItemInCart(
+                        itemId,
+                        quantity
+                )
         )
 
-        return Result.success(this.jpa.save(cart))
+        return this.jpa.save(cart)
     }
 
-    override fun updateItem(id: String, itemId: Int, quantity: Int): Result<Cart> {
-        val cart = this.get(id) ?: return Result.failure(CartAlreadyExistsException(id))
+    override fun updateItem(id: String, itemId: Int, quantity: Int): Cart {
+        val cart = this.get(id)
 
-        val item = cart.items.find { i -> i.itemId == itemId } ?: return Result.failure(ItemNotFoundException(id))
+        val item = cart.items.find { i -> i.itemId == itemId } ?: throw ItemNotFoundException(id)
         item.quantity = quantity
 
-        return Result.success(this.jpa.save(cart))
+        return this.jpa.save(cart)
     }
 
-    override fun deleteItem(id: String, itemId: Int): Result<Cart> {
-        val cart = this.get(id) ?: return Result.failure(CartNotFoundException(id))
+    override fun deleteItem(id: String, itemId: Int): Cart {
+        val cart = this.get(id)
 
-        val item = cart.items.find { i -> i.itemId == itemId } ?: return Result.failure(ItemNotFoundException(id))
+        val item = cart.items.find { i -> i.itemId == itemId } ?: throw ItemNotFoundException(id)
         cart.items.remove(item)
 
-        return Result.success(this.jpa.save(cart))
+        return this.jpa.save(cart)
     }
 
-    override fun update(newCart: Cart): Result<Cart> {
-        this.get(newCart.id) ?: return Result.failure(CartNotFoundException(newCart.id))
-        return Result.success(this.jpa.save(newCart))
+    override fun update(newCart: Cart): Cart {
+        this.get(newCart.id)
+        return this.jpa.save(newCart)
     }
 
-    override fun delete(id: String): Result<Cart> {
-        val cart = this.get(id) ?: return Result.failure(CartNotFoundException(id))
+    override fun delete(id: String): Cart {
+        val cart = this.get(id)
         this.jpa.delete(cart)
-        return Result.success(cart)
+        return cart
     }
 
     override fun valid(id: String): Boolean {
-        val cart = this.get(id) ?: return false
+        val cart = this.get(id)
 
         cart.items.clear()
         this.jpa.save(cart)
