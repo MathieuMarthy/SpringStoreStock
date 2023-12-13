@@ -110,7 +110,7 @@ open class ItemDatabaseTest {
     fun `update an existing item`(){
         val item = defaultItem()
         repo.create(item)
-        val result = repo.update(item.copy(name = "test2"))
+        val result = repo.update(item.id, item.copy(name = "test2"))
         assertThat(result).isSuccess()
         assertThat(result.getOrNull()!!.name).isEqualTo("test2")
     }
@@ -118,7 +118,7 @@ open class ItemDatabaseTest {
     @Test
     fun `update a non existing item`(){
         val item = defaultItem()
-        val result = repo.update(item)
+        val result = repo.update(item.id,item)
         assertThat(result).isFailure()
     }
 
