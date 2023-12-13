@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController
 @Validated
 class ItemController(val itemRepository: ItemRepository)  {
 
-    @Operation(summary = "Create a new item")
+    @Operation(summary = "Create a new item", description = "If the item already exists, it will return a 409 error", tags = ["Administration"])
     @ApiResponses(value = [
         ApiResponse(responseCode = "201", description = "Item created",
             content = [Content(mediaType = "application/json", schema = Schema(implementation = ItemEntity::class))]),
@@ -42,7 +42,7 @@ class ItemController(val itemRepository: ItemRepository)  {
             { e -> ResponseEntity.status(HttpStatus.CONFLICT).build() }
         )
 
-    @Operation(summary = "Get an item by its id")
+    @Operation(summary = "Get an item by its id", description = "Get an item by its id", tags = ["Métier"])
     @ApiResponses(value = [
         ApiResponse(responseCode = "200", description = "Found the item",
             content = [Content(mediaType = "application/json", schema = Schema(implementation = ItemEntity::class))]),
@@ -55,7 +55,7 @@ class ItemController(val itemRepository: ItemRepository)  {
         return ResponseEntity.ok(item.asEntity())
     }
 
-    @Operation(summary = "Get all items")
+    @Operation(summary = "Get all items", description = "Get all items", tags = ["Métier"])
     @ApiResponses(value = [
         ApiResponse(responseCode = "200", description = "Found the items",
             content = [Content(mediaType = "application/json", array = ArraySchema(schema = Schema(implementation = ItemEntity::class)))]),
@@ -68,7 +68,7 @@ class ItemController(val itemRepository: ItemRepository)  {
             .map { it!!.asEntity() }
             .let { ResponseEntity.ok(it) }
 
-    @Operation(summary = "Update an item by its id")
+    @Operation(summary = "Update an item by its id", description = "Update an item by its id", tags = ["Administration"])
     @ApiResponses(value = [
         ApiResponse(responseCode = "200", description = "Item updated",
             content = [Content(mediaType = "application/json", schema = Schema(implementation = ItemEntity::class))]),
@@ -86,7 +86,7 @@ class ItemController(val itemRepository: ItemRepository)  {
             { e -> ResponseEntity.status(HttpStatus.CONFLICT).build() }
         )
     }
-    @Operation(summary = "Delete an item by its id")
+    @Operation(summary = "Delete an item by its id", description = "Delete an item by its id", tags = ["Administration"])
     @ApiResponses(value = [
         ApiResponse(responseCode = "204", description = "Item deleted",
             content = [Content(mediaType = "application/json", schema = Schema(implementation = ItemEntity::class))]),
@@ -97,7 +97,7 @@ class ItemController(val itemRepository: ItemRepository)  {
     fun deleteItem(@Valid id : Int): ResponseEntity<Any> =
         itemRepository.delete(id)?.let { ResponseEntity.noContent().build() } ?: throw ItemNotFoundException(id)
 
-    @Operation(summary = "Valid and decrease stock of items")
+    @Operation(summary = "Valid and decrease stock of items", description = "Valid and decrease stock of items", tags = ["Métier"])
     @ApiResponses(value = [
         ApiResponse(responseCode = "200", description = "Items valid and stock decreased",
             content = [Content(mediaType = "application/json", schema = Schema(implementation = ItemEntity::class))]),

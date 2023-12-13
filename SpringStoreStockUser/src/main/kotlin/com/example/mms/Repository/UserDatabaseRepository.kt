@@ -32,7 +32,8 @@ class UserDatabaseRepository(private val jpa : UserJpaRepository) : UserReposito
         return jpa.findById(email).map { it.asUser() }.getOrNull()
     }
 
-    override fun update(user: User): Result<User> = if (jpa.findById(user.email).isPresent) {
+    override fun update(email: String,user: User): Result<User> = if (jpa.findById(email).isPresent) {
+        user.email = email
         val saved = jpa.save(user.asEntity())
         logger.info("Updating user ${user.email}")
         Result.success(saved.asUser())
