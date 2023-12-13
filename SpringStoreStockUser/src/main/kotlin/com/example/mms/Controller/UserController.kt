@@ -17,13 +17,7 @@ import jakarta.validation.constraints.Email
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @Validated
@@ -37,9 +31,9 @@ class UserController(val userRepository: UserRepository) {
             content = [Content(mediaType = "application/json", schema = Schema(implementation = String::class))])
     ])
     @PostMapping("api/users")
-    fun create(@RequestBody @Valid user : UserDTO): ResponseEntity<UserEntity> =
+    fun create(@RequestBody @Valid user: UserDTO): ResponseEntity<UserEntity> =
         userRepository.create(user.asUser()).fold(
-            { s -> ResponseEntity.status(HttpStatus.CREATED).body(s.asEntity())},
+            { s -> ResponseEntity.status(HttpStatus.CREATED).body(s.asEntity()) },
             { e -> ResponseEntity.status(HttpStatus.CONFLICT).build() }
         )
 
@@ -77,10 +71,10 @@ class UserController(val userRepository: UserRepository) {
             content = [Content(mediaType = "application/json", schema = Schema(implementation = String::class))])
     ])
     @GetMapping("api/users/{email}")
-    fun getOneUser(@PathVariable @Valid @Email email : String): ResponseEntity<UserEntity> {
+    fun getOneUser(@PathVariable @Valid @Email email: String): ResponseEntity<UserEntity> {
         val user = userRepository.get(email)
         return if (user != null) ResponseEntity.ok(user.asEntity())
-        else throw UserNotFoundException(email)
+        else ResponseEntity.status(HttpStatus.NOT_FOUND).build()
     }
 
     @Operation(summary = "Update a user by its email", description = "Update a user by its email", tags = ["Administration"])
@@ -106,7 +100,7 @@ class UserController(val userRepository: UserRepository) {
             content = [Content(mediaType = "application/json", schema = Schema(implementation = String::class))])
     ])
     @DeleteMapping("api/users/{email}")
-    fun deleteUser(@PathVariable @Valid @Email email : String): ResponseEntity<Any> =
+    fun deleteUser(@PathVariable @Valid @Email email: String): ResponseEntity<Any> =
         userRepository.delete(email)?.let { ResponseEntity.noContent().build() }
             ?: throw UserNotFoundException(email)
 

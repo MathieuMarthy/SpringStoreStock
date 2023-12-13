@@ -9,17 +9,17 @@ import java.util.*
 open class UserDatabaseTest {
 
     private fun defaultUser(
-        email : String = "email@test.fr",
-        firstName : String = "firstName",
-        lastName : String = "lastName",
-        address : String = "address",
-        followingNewsletter : Boolean = true,
-        lastCommand : Date? = null
-    ) : User {
+        email: String = "email@test.fr",
+        firstName: String = "firstName",
+        lastName: String = "lastName",
+        address: String = "address",
+        followingNewsletter: Boolean = true,
+        lastCommand: Date? = null
+    ): User {
         return User(email, firstName, lastName, address, followingNewsletter, lastCommand)
     }
 
-    lateinit var repo : UserDatabaseRepository
+    lateinit var repo: UserDatabaseRepository
 
     @Test
     fun `create once working`() {
@@ -72,7 +72,7 @@ open class UserDatabaseTest {
     }
 
     @Test
-    fun `get all newletters subscribers`(){
+    fun `get all newletters subscribers`() {
         val user = defaultUser()
         val user2 = defaultUser(email = "cc@cc.fr", firstName = "cc", followingNewsletter = false)
         val user3 = defaultUser(email = "pp@pp.fr", firstName = "pp")
