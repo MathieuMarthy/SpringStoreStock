@@ -30,7 +30,7 @@ class CartController(
     private val userService: UserService
 ) {
 
-    @Operation(summary = "Create a cart for a user", description = "Create a cart for a user, the user must exist")
+    @Operation(summary = "Create a cart for a user", description = "Create a cart for a user, the user must exist", tags = ["Administration"])
     @ApiResponses(
         value = [
             ApiResponse(
@@ -65,7 +65,7 @@ class CartController(
         return ResponseEntity.created(location).body(resCart.asCartDTO())
     }
 
-    @Operation(summary = "Get a cart for a user", description = "Get a cart for a user")
+    @Operation(summary = "Get a cart for a user", description = "Get a cart for a user", tags = ["Administration"])
     @ApiResponses(
         value = [
             ApiResponse(
@@ -84,7 +84,7 @@ class CartController(
         return ResponseEntity.ok(cart.asCartDTO())
     }
 
-    @Operation(summary = "Delete a cart for a user", description = "Delete a cart for a user")
+    @Operation(summary = "Delete a cart for a user", description = "Delete a cart for a user", tags = ["Administration"])
     @ApiResponses(
         value = [
             ApiResponse(
@@ -105,7 +105,8 @@ class CartController(
 
     @Operation(
         summary = "Add an item to a cart",
-        description = "Add an item to a cart, the item must exist and the quantity must be available"
+        description = "Add an item to a cart, the item must exist and the quantity must be available",
+        tags = ["Métier"]
     )
     @ApiResponses(
         value = [
@@ -144,7 +145,8 @@ class CartController(
 
     @Operation(
         summary = "Update an item in a cart",
-        description = "Update an item in a cart, the item must exist and the quantity must be available"
+        description = "Update an item in a cart, the item must exist and the quantity must be available",
+        tags = ["Métier"]
     )
     @ApiResponses(
         value = [
@@ -185,7 +187,7 @@ class CartController(
         return ResponseEntity.ok(resCart.asCartDTO())
     }
 
-    @Operation(summary = "Delete an item in a cart", description = "Delete an item in a cart")
+    @Operation(summary = "Delete an item in a cart", description = "Delete an item in a cart", tags = ["Métier"])
     @ApiResponses(
         value = [
             ApiResponse(
@@ -210,7 +212,8 @@ class CartController(
 
     @Operation(
         summary = "Valid a cart",
-        description = "Valid a cart, the cart must not be empty and all items must be valid"
+        description = "Valid a cart, the cart must not be empty and all items must be valid",
+        tags = ["Métier"]
     )
     @ApiResponses(
         value = [
